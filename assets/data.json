@@ -1,0 +1,40 @@
+{
+  "data": [
+    {
+      "yLabel": 722.51,
+      "xLabel": 1
+    },
+    {
+      "yLabel": 911,
+      "xLabel": 2
+    },
+    {
+      "yLabel": 1188.53,
+      "xLabel": 3
+    },
+    {
+      "yLabel": 12,
+      "xLabel": 4
+    },
+    {
+      "yLabel": 390.65,
+      "xLabel": 5
+    },
+    {
+      "yLabel": 54.98,
+      "xLabel": 6
+    },
+    {
+      "yLabel": 390.65,
+      "xLabel": 7
+    },
+    {
+      "yLabel": 100,
+      "xLabel": 8
+    },
+    {
+      "yLabel": 200,
+      "xLabel": 9
+    }
+  ]
+}
