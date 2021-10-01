@@ -25,7 +25,6 @@ const NewLogScreen = (props) => {
     const day = String(dateObj.getDate()).padStart(2, '0');
     const year = dateObj.getFullYear();
     const dateCreated = month + ' ' + day + ', ' + year;
-    console.log(dateCreated)
 
 
     const titleChangeHandler = text => {

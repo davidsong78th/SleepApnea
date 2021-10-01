@@ -13,7 +13,7 @@ Currently available sleep apnea detection devices are expensive and complicated 
 ## Features
 
 - Software will include separate displays for both the clinician and patient. 
-- Long term data storage will be on the cloud.
+- Data storage will be on local database.
 - Will display polysomnography records using data collected from the sensors.
 
 
@@ -55,14 +55,33 @@ Scan QR Code using Local Camera and Done!
   
 ## Optimizations
 
-Still working on it... Stay Tune!
+Sample Data to import is avaliable in **assets/data.json**
+
+```bash
+  {
+    "data": [
+      {
+        "y": 722.51,
+        "x": 1
+      },
+      {
+        "y": 911,
+        "x": 2
+      },
+      {
+        "y": 1188.53,
+        "x": 3
+      }
+    ]
+  }
+```
 
   
 ## Tech Stack
 
 **FrontEnd and BackEnd:** React Native
 
-**Libaries:** SQLite, React Native Chart Kit
+**Libaries:** SQLite, React Native Chart Kit, Victory Chart
 
   
 ## 🔗 Links
@@ -71,6 +90,6 @@ Still working on it... Stay Tune!
 
   
 ## 🚀 About Me
-I'm still learning :)
+In the process of learning :)
 
   
