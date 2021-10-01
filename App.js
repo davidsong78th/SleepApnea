@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, StatusBar } from 'react-native';
 import UsersNavigator from './navigation/UsersNavigator';
 import { Provider } from 'react-redux';
 import { createStore, combineReducers, applyMiddleware } from 'redux';
@@ -24,7 +24,9 @@ const store = createStore(rootReducer, applyMiddleware(ReduxThunk))
 export default function App() {
   return (
     <Provider store={store}>
-      <UsersNavigator />
+      <View style={{ flex: 1, marginTop: StatusBar.currentHeight }}>
+        <UsersNavigator />
+      </View>
     </Provider>
   );
 }

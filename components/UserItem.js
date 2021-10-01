@@ -1,43 +1,53 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity, Button } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity, Button, TouchableWithoutFeedback } from 'react-native';
 import Colors from '../constants/Colors';
+import Card from './Card';
 
 const UserItem = props => {
   return (
-    <TouchableOpacity onPress={props.onSelect} style={styles.userItem}>
-      <Image style={styles.image} source={{ uri: props.image }} />
-
-      <View style={styles.infoContainer}>
-        <Text style={styles.title}>{props.title}</Text>
+    <Card style={styles.item}>
+      <View style={styles.touchable}>
+        <TouchableOpacity onPress={props.onSelect} style={styles.userItem} >
+          <Image style={styles.image} source={{ uri: props.image }} />
+          <View style={styles.infoContainer}>
+            <Text style={styles.date}>Imported: {props.dateCreated}</Text>
+            <Text style={styles.title}>{props.title}</Text>
+          </View>
+          <View>
+            {/* Placing button */}
+            {props.children}
+          </View>
+        </TouchableOpacity>
       </View>
-      <View style={styles.deleteButton}>
-        <Button title='Delete' color={Colors.primary} onPress={props.deleteUser} />
-      </View>
-
-    </TouchableOpacity>
+    </Card>
   );
 };
 
 const styles = StyleSheet.create({
+  item: {
+    margin: 10,
+  },
+  touchable: {
+    borderRadius: 10,
+    overflow: 'hidden'
+  },
   userItem: {
-    borderBottomColor: '#ccc',
-    borderBottomWidth: 1,
     paddingVertical: 15,
     paddingHorizontal: 30,
-    // flexDirection: 'row',
     alignItems: 'center',
+    overflow: 'hidden',
+    borderRadius: 10,
   },
   image: {
-    width: 90,
-    height: 90,
-    borderRadius: 45,
+    width: 100,
+    height: 100,
+    borderRadius: 50,
     backgroundColor: '#ccc',
     borderColor: Colors.primary,
     borderWidth: 1,
     marginBottom: 15
   },
   infoContainer: {
-    // marginLeft: 25,
     width: 250,
     justifyContent: 'center',
     alignItems: 'center'
@@ -45,7 +55,7 @@ const styles = StyleSheet.create({
   title: {
     color: 'black',
     fontSize: 18,
-    marginBottom: 5,
+    marginBottom: 7,
     alignItems: 'center',
     justifyContent: 'center'
   },
@@ -53,8 +63,18 @@ const styles = StyleSheet.create({
     color: '#666',
     fontSize: 16
   },
-  deleteButton: {
+  date: {
+    color: 'black',
+    fontSize: 12,
+    marginBottom: 3,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
 
+  deleteButton: {
+    // borderTopRightRadius: 10,
+    // borderTopLeftRadius: 10,
+    overflow: 'hidden'
   }
 });
 
