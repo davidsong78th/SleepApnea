@@ -5,7 +5,7 @@ import { insertUser, fetchUsers, deleteUser } from '../helpers/db';
 import * as FileSystem from 'expo-file-system';
 
 
-export const addUser = (title, image, document) => {
+export const addUser = (title, image, document, dateCreated) => {
     return async (dispatch) => {
         const fileName = image.split('/').pop()
         // someFolder/myimage.jpg => ['someFolder', 'myimage.jpg'] => myimage.jpg
@@ -18,7 +18,7 @@ export const addUser = (title, image, document) => {
                 from: image,
                 to: newImagePath
             })
-            const dbResult = await insertUser(title, newImagePath, newDocumentPath, 15.6, 23.1)
+            const dbResult = await insertUser(title, newImagePath, newDocumentPath, dateCreated, 23.1)
             console.log(dbResult)
             dispatch({
                 type: ADD_USERS,
@@ -26,7 +26,8 @@ export const addUser = (title, image, document) => {
                     title: title,
                     image: newImagePath,
                     id: dbResult.insertId,
-                    document: document
+                    document: document,
+                    dateCreated: dateCreated
                 }
             })
         } catch (err) {
