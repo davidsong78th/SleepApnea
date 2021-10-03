@@ -8,7 +8,7 @@ const UserItem = props => {
     <Card style={styles.item}>
       <View style={styles.touchable}>
         <TouchableOpacity onPress={props.onSelect} style={styles.userItem} >
-          <Image style={styles.image} source={{ uri: props.image }} />
+          <Image style={styles.image} source={require('../assets/folder.png')} />
           <View style={styles.infoContainer}>
             <Text style={styles.date}>Imported: {props.dateCreated}</Text>
             <Text style={styles.title}>{props.title}</Text>
@@ -26,10 +26,11 @@ const UserItem = props => {
 const styles = StyleSheet.create({
   item: {
     margin: 10,
+    padding: 10
   },
   touchable: {
     borderRadius: 10,
-    overflow: 'hidden'
+    overflow: 'hidden',
   },
   userItem: {
     paddingVertical: 15,
@@ -45,7 +46,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#ccc',
     borderColor: Colors.primary,
     borderWidth: 1,
-    marginBottom: 15
+    marginBottom: 15,
   },
   infoContainer: {
     width: 250,

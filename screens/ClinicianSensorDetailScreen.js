@@ -1,9 +1,12 @@
 //import libraries
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, Dimensions, ActivityIndicator } from 'react-native';
-import { VictoryChart, VictoryZoomContainer, VictoryLine, VictoryBrushContainer, VictoryAxis } from "victory-native";
+import React, { useState, useEffect, useCallback } from 'react';
+import { View, Text, StyleSheet, Dimensions, ActivityIndicator, Alert, Platform } from 'react-native';
+import { VictoryChart, VictoryZoomContainer, VictoryLine, VictoryBrushContainer, VictoryAxis, VictoryTooltip, VictoryGroup, VictoryScatter, VictoryLabel, createContainer, VictoryVoronoiContainer } from "victory-native";
 import * as FileSystem from 'expo-file-system';
 import Colors from '../constants/Colors';
+import { Item } from 'react-navigation-header-buttons';
+import { FontAwesome5 } from '@expo/vector-icons'
+
 
 // create a component
 const ClinicianSensorDetailScreen = (props) => {
@@ -11,12 +14,12 @@ const ClinicianSensorDetailScreen = (props) => {
     const documentPath = props.navigation.getParam('userDocument')
     const sensorTitle = props.navigation.getParam('sensorTitle')
     const dateCreated = props.navigation.getParam('dateCreated')
+
     //Setup data and read inputs
-    // const [isLoading, setIsLoading] = useState(true)
-    // const [yData, setYData] = useState([])
-    // const [xData, setXData] = useState([])
     const [fileData, setFileData] = useState([])
     const [showContent, setShowContent] = useState(false)
+    // const [startIndex, setStartIndex] = useState(0)
+    // const [stopIndex, setStopIndex] = useState(0)
 
     const readFile = async () => {
         const fileString = await FileSystem.readAsStringAsync(documentPath)
@@ -24,6 +27,8 @@ const ClinicianSensorDetailScreen = (props) => {
 
         const data = dataObj.data
         setFileData(data)
+        // setStartIndex(data[0].x)
+        // setStopIndex(data[data.length - 1].x)
     }
 
     useEffect(() => {
@@ -37,8 +42,8 @@ const ClinicianSensorDetailScreen = (props) => {
     }, [setShowContent])
 
     //Chart Configurations
-    const [selectedDomain, setSelectedDomain] = useState({});
-    const [zoomDomain, setZoomDomain] = useState({});
+    const [zoomDomain, setZoomDomain] = useState();
+    const [selectedDomain, setSelectedDomain] = useState();
 
     const handleZoom = (domain) => {
         setSelectedDomain(domain);
@@ -51,51 +56,77 @@ const ClinicianSensorDetailScreen = (props) => {
     const screenWidth = Dimensions.get("window").width;
     const screenHeight = Dimensions.get("window").height;
 
+    //Filter large data set to speedup chart performance
+    const getData = (data, maxPoints) => {
+        const filtered = data
+        if (filtered.length > maxPoints) {
+            // limit k to powers of 2, e.g. 64, 128, 256
+            // so that the same points will be chosen reliably, reducing flicker
+            const k = Math.pow(2, Math.ceil(Math.log2(filtered.length / maxPoints)));
+            return filtered.filter(
+                (d, i) => ((i % k) === 0)
+            );
+        }
+        return filtered;
+
+    }
+    const maxPoints = 100
+    const renderedData = getData(fileData, maxPoints)
+
+    //Show Data points handler
+    const [showDataPoints, setShowDataPoints] = useState(false)
+
+    const dataPointsHandler = useCallback(async () => {
+        setShowDataPoints(prevState => !prevState)
+    }, [showDataPoints])
+
+    useEffect(() => {
+        props.navigation.setParams({ 'dataPointsHandler': () => dataPointsHandler() })
+    }, [dataPointsHandler])
+
+
     return (
         <View>
             {showContent ?
                 <View style={styles.screen}>
                     <Text style={styles.text}>{sensorTitle} Chart</Text>
                     <Text>Date: {dateCreated} </Text>
-                    <VictoryChart width={screenWidth} height={screenHeight / 1.5} scale={{ x: "linear" }}
+                    <VictoryChart
+                        width={screenWidth}
+                        height={screenHeight / 1.5}
+                        scale={{ x: "linear" }}
                         containerComponent={
                             <VictoryZoomContainer
-                                responsive={false}
                                 zoomDimension="x"
                                 zoomDomain={zoomDomain}
                                 onZoomDomainChange={handleZoom}
+                            // downsample={samplingData}
                             />
                         }
-                    // domainPadding={{ x: [20, 0], y: [10, 10] }}
                     >
                         <VictoryLine
                             style={{
                                 data: {
-                                    stroke: "orange",
-                                }
+                                    stroke: "#b674f7",
+                                },
+                                labels: { fontSize: ({ text }) => text.length > 10 ? 8 : 12 },
                             }}
-                            // data={[
-                            //     { x: 100, y: 190, label: "190" },
-                            //     { x: 200, y: 257, label: "257" },
-                            //     { x: 300, y: 345, label: "345" },
-                            //     { x: 400, y: 515, label: "515" },
-                            //     { x: 500, y: 132, label: "132" },
-                            //     { x: 600, y: 305 },
-                            //     { x: 700, y: 270 },
-                            //     { x: 800, y: 470 },
-                            //     { x: 900, y: 350 }
-                            // ]}
-                            data={fileData}
+
+                            data={renderedData}
                             x="x"
                             y="y"
-                        />
+                            labels={showDataPoints ? ({ datum }) => `x: ${datum.x}\n y: ${datum.y}` : null}
+                            labelComponent={<VictoryLabel renderInPortal dy={-20} />}
 
+                        />
                     </VictoryChart>
 
                     <VictoryChart
                         padding={{ top: 0, left: 50, right: 50, bottom: 50 }}
                         margin={{ bottom: 50 }}
-                        width={screenWidth} height={screenHeight / 5} scale={{ x: "linear" }}
+                        width={screenWidth}
+                        height={screenHeight / 5}
+                        scale={{ x: "linear" }}
                         containerComponent={
                             <VictoryBrushContainer
                                 responsive={false}
@@ -113,11 +144,12 @@ const ClinicianSensorDetailScreen = (props) => {
                         />
                         <VictoryLine
                             style={{
-                                data: { stroke: "orange" }
+                                data: { stroke: "#b674f7" }
                             }}
-                            data={fileData}
+                            data={renderedData}
                             x="x"
                             y="y"
+
                         />
                     </VictoryChart>
                 </View>
@@ -131,8 +163,24 @@ const ClinicianSensorDetailScreen = (props) => {
 
 ClinicianSensorDetailScreen.navigationOptions = navData => {
     const sensorTitle = navData.navigation.getParam('sensorTitle')
+    const dataPointsHandler = navData.navigation.getParam('dataPointsHandler')
     return {
-        headerTitle: sensorTitle
+        headerTitle: sensorTitle,
+        headerRight: () =>
+            <View style={{ flexDirection: "row" }}>
+                <Item title='data points' iconName={"chart-bar"} IconComponent={FontAwesome5} iconSize={23}
+                    color={Platform.OS === 'android' ? 'white' : Colors.primary}
+                    onPress={() => {
+                        Alert.alert("Plot Detail Mode", "This shows data points but will slow down performance. Turn this off to get back full performance.", [{
+                            text: 'Turn ON/OFF Data points',
+                            onPress: () => dataPointsHandler()
+                        }, { text: 'Go Back' }])
+
+                    }}
+                />
+
+            </View>
+
     }
 }
 

@@ -3,12 +3,17 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import HeaderButton from '../components/HeaderButton'
+import Icon from 'react-native-vector-icons/Ionicons';
+import Colors from '../constants/Colors';
+
 
 // create a component
 const AboutScreen = (props) => {
     return (
         <View style={styles.screen}>
-            <Text>About Screen</Text>
+            {/* <Text>About Screen</Text> */}
+            <Text>Created using React Native</Text>
+            <Icon name="ios-logo-react" size={100} color="#61DBFB" />
         </View>
     )
 };

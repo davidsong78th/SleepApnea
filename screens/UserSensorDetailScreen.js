@@ -66,19 +66,19 @@ const UserSensorDetailScreen = (props) => {
                                 {
                                     data: yLabelData
                                 },
-                                {
-                                    data: [
-                                        Math.random() * 100,
-                                        Math.random() * 100,
-                                        Math.random() * 100,
-                                        Math.random() * 100,
-                                        Math.random() * 100,
-                                        Math.random() * 100,
-                                        Math.random() * 100,
-                                        Math.random() * 100,
-                                        Math.random() * 100,
-                                    ]
-                                }
+                                // {
+                                //     data: [
+                                //         Math.random() * 100,
+                                //         Math.random() * 100,
+                                //         Math.random() * 100,
+                                //         Math.random() * 100,
+                                //         Math.random() * 100,
+                                //         Math.random() * 100,
+                                //         Math.random() * 100,
+                                //         Math.random() * 100,
+                                //         Math.random() * 100,
+                                //     ]
+                                // }
                             ],
                             // legend: ["World Bank", 'Bank']
                         }}

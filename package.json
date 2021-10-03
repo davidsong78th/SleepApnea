@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@expo/vector-icons": "^12.0.5",
+    "crossfilter2": "^1.5.4",
     "expo": "~42.0.1",
     "expo-document-picker": "~9.2.4",
     "expo-file-system": "~11.1.3",
@@ -32,6 +33,7 @@
     "react-navigation-header-buttons": "^6.3.1",
     "react-navigation-stack": "^2.10.4",
     "react-redux": "^7.2.4",
+    "react-vector-icons": "^0.0.1",
     "redux": "^4.1.1",
     "redux-thunk": "^2.3.0",
     "rn-fetch-blob": "^0.12.0",
