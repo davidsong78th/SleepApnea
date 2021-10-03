@@ -3,6 +3,7 @@ import React from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, Button, TouchableWithoutFeedback, ScrollView } from 'react-native';
 import Colors from '../constants/Colors';
 import Card from './Card';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 
 // create a component
 const SensorItem = (props) => {
@@ -11,6 +12,7 @@ const SensorItem = (props) => {
             <View style={styles.touchable}>
                 <TouchableOpacity onPress={props.onSelect} style={styles.SensorItem} >
                     <View style={styles.infoContainer}>
+                        <Icon name={props.name} size={30} color={Colors.primary} />
                         <Text style={styles.title}>{props.title}</Text>
                     </View>
                 </TouchableOpacity>

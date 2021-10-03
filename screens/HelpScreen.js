@@ -9,6 +9,7 @@ const HelpScreen = (props) => {
     return (
         <View style={styles.screen}>
             <Text>Help Screen</Text>
+            <Text></Text>
         </View>
     )
 };

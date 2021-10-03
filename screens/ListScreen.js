@@ -1,5 +1,5 @@
 //import libraries
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, StyleSheet, Platform, FlatList, Alert, Button, ScrollView, Dimensions, ActivityIndicator } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import HeaderButton from '../components/HeaderButton'
@@ -7,78 +7,80 @@ import { useSelector, useDispatch } from 'react-redux'
 import UserItem from '../components/UserItem';
 import * as userActions from '../store/users-action'
 import Colors from '../constants/Colors';
+import Icon from 'react-native-vector-icons/FontAwesome5';
+import { FontAwesome5 } from '@expo/vector-icons'
+
 
 
 // create a component
 const ListScreen = (props) => {
+    //Get data from Redux
     const users = useSelector(state => state.users.users);
     const dispatch = useDispatch()
 
+    //Use this for loading indicator
     const [showContent, setShowContent] = useState(false)
-
-
-    useEffect(() => {
-        dispatch(userActions.loadUsers())
-    }, [dispatch])
-
     useEffect(() => {
         setTimeout(() => {
             setShowContent(true)
         }, 300)
     }, [setShowContent])
 
-    const deleteItemHandler = (id, title) => {
-        Alert.alert(`Delete ${title} Log?`, 'There is no way of recovering it.', [
-            {
-                text: 'Yes', style: 'destructive', onPress: () => {
-                    dispatch(userActions.deleteUsers(id))
-                }
-            },
-            { text: 'No', style: 'default' }
-        ])
+    //Load users data from DB
+    const [isRefreshing, setIsRefreshing] = useState(false)
+
+    const loadUsers = useCallback(async () => {
+        setIsRefreshing(true)
+        try {
+            await dispatch(userActions.loadUsers())
+        } catch (err) {
+            setError(err.message)
+        }
+        setIsRefreshing(false)
+    }, [dispatch])
+
+    //Setting up navigation listener to listen for new changes to users DB
+    useEffect(() => {
+        const willFocusSub = props.navigation.addListener('willFocus', () => {
+            loadUsers()
+        })
+        return () => {
+            willFocusSub.remove()
+        }
+    }, [loadUsers])
+
+    useEffect(() => {
+        loadUsers()
+    }, [dispatch, loadUsers])
+
+    if (users.length === 0 || !users) {
+        return <View style={styles.content}>
+            <Text>No Data Log Found. Create Log at  <Icon name="user-plus" size={20} color={Colors.primary} />.</Text>
+        </View>
     }
 
     return (
-        // <FlatList
-        //     data={users}
-        //     keyExtractor={item => item.id}
-        //     renderItem={itemData => (
-        //         <UserItem
-        //             image={itemData.item.imageUri}
-        //             title={itemData.item.title}
-        //             onSelect={() => {
-        //                 props.navigation.navigate('UserDetail', {
-        //                     userTitle: itemData.item.title,
-        //                     userId: itemData.item.id,
-        //                     userDocument: itemData.item.document
-        //                 });
-        //             }}
-        //             onDeleteUser={() => dispatch(userActions.deleteUsers(itemData.item.id))}
-        //         />
-        //     )}
-        // />
         <View style={styles.screen}>
             {showContent ?
                 <FlatList
+                    onRefresh={loadUsers}
+                    refreshing={isRefreshing}
                     data={users}
                     keyExtractor={item => item.id}
                     renderItem={itemData => {
                         return (
                             <UserItem
                                 title={itemData.item.title}
-                                image={itemData.item.imageUri}
                                 dateCreated={itemData.item.dateCreated}
                                 onSelect={() => {
                                     props.navigation.navigate('UserSensor', {
                                         userDocument: itemData.item.document,
-                                        dateCreated: itemData.item.dateCreated
-                                        // userTitle: itemData.item.title,
-                                        // userId: itemData.item.id,
+                                        dateCreated: itemData.item.dateCreated,
+                                        userTitle: itemData.item.title,
+                                        userId: itemData.item.id,
                                     });
                                 }}
                             >
-                                <Button title='Delete' color={Colors.primary}
-                                    onPress={() => { deleteItemHandler(itemData.item.id, itemData.item.title) }} />
                             </UserItem>
                         )
                     }}
@@ -99,13 +101,15 @@ ListScreen.navigationOptions = navData => {
                 navData.navigation.toggleDrawer();
             }} />
         </HeaderButtons>,
-        headerRight: () => <HeaderButtons HeaderButtonComponent={HeaderButton}>
-            <Item title='Add Log' iconName={Platform.OS === 'android' ? 'md-create' : 'ios-create'}
+        headerRight: () =>
+            <Item title='Add Log' iconName={Platform.OS === 'android' ? 'user-plus' : 'user-plus'} IconComponent={FontAwesome5} iconSize={20}
+                color={Platform.OS === 'android' ? 'white' : Colors.primary}
                 onPress={() => {
                     navData.navigation.navigate('NewLog')
                 }}
             />
-        </HeaderButtons>
+
+
     }
 }
 
@@ -121,7 +125,11 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        // marginTop: Dimensions.get("window").height / 2,
+    },
+    content: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
     }
 });
 
