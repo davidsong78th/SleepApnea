@@ -10,8 +10,6 @@ import Colors from '../constants/Colors';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { FontAwesome5 } from '@expo/vector-icons'
 
-
-
 // create a component
 const ListScreen = (props) => {
     //Get data from Redux
@@ -108,8 +106,6 @@ ListScreen.navigationOptions = navData => {
                     navData.navigation.navigate('NewLog')
                 }}
             />
-
-
     }
 }
 
