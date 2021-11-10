@@ -6,6 +6,7 @@ import * as FileSystem from 'expo-file-system';
 import Colors from '../constants/Colors';
 import { Item } from 'react-navigation-header-buttons';
 import { FontAwesome5 } from '@expo/vector-icons'
+import DropDownPicker from 'react-native-dropdown-picker';
 
 
 // create a component
@@ -15,11 +16,30 @@ const ClinicianSensorDetailScreen = (props) => {
     const sensorTitle = props.navigation.getParam('sensorTitle')
     const dateCreated = props.navigation.getParam('dateCreated')
 
+    const selectedHour = props.navigation.getParam('selectedHour')
+    const selectedMinute = props.navigation.getParam('selectedMinute')
+    const selectedSeconds = props.navigation.getParam('selectedSeconds')
+
+    const oneSecondSamplePoint = 500
+    const oneMinuteSamplePoint = 30000
+    const oneHourSamplePoint = 1800000
+
     //Setup data and read inputs
     const [fileData, setFileData] = useState([])
+    const [filteredData, setFilteredData] = useState([])
     const [showContent, setShowContent] = useState(false)
     // const [startIndex, setStartIndex] = useState(0)
     // const [stopIndex, setStopIndex] = useState(0)
+
+    //Dropdown menu
+    const [open, setOpen] = useState(false);
+    const [value, setValue] = useState(1000);
+    const [items, setItems] = useState([
+        { label: '1000 points', value: 1000 },
+        { label: '2500 points', value: 2500 },
+        { label: '5000 points', value: 5000 }
+    ]);
+    // console.log(value)
 
     const readFile = async () => {
         const fileString = await FileSystem.readAsStringAsync(documentPath)
@@ -27,6 +47,21 @@ const ClinicianSensorDetailScreen = (props) => {
 
         const data = dataObj.data
         setFileData(data)
+
+        //Get the elapsed time
+        const selectedTimeAsXValues = selectedHour * oneHourSamplePoint + selectedMinute * oneMinuteSamplePoint + selectedSeconds * oneSecondSamplePoint
+
+        //Check if selectedTime is out of bound of array
+        const maxPoints = data.length - 5000
+
+        //If it is, go pick another time
+        if (selectedTimeAsXValues > maxPoints) {
+            Alert.alert("Data Not Exist", "Pick Another Elapsed Time", [{ text: 'Go Back', onPress: () => props.navigation.goBack() }])
+        }
+        else {
+            // selectedTime + 5000 data points = 10 sec data
+            setFilteredData(data.slice(selectedTimeAsXValues, selectedTimeAsXValues + 5000))
+        }
         // setStartIndex(data[0].x)
         // setStopIndex(data[data.length - 1].x)
     }
@@ -58,20 +93,26 @@ const ClinicianSensorDetailScreen = (props) => {
 
     //Filter large data set to speedup chart performance
     const getData = (data, maxPoints) => {
-        const filtered = data
+        // const filtered = data
+        const filtered = filteredData
+
+        // const startIndex = data.findIndex((d) => d.x >= zoomDomain.x[0]);
+        // const endIndex = data.findIndex((d) => d.x > zoomDomain.x[1]);
+        // const filtered = data.slice(startIndex, endIndex);
+
         if (filtered.length > maxPoints) {
             // limit k to powers of 2, e.g. 64, 128, 256
             // so that the same points will be chosen reliably, reducing flicker
-            const k = Math.pow(2, Math.ceil(Math.log2(filtered.length / maxPoints)));
+            // const k = Math.pow(2, Math.ceil(Math.log2(filtered.length / maxPoints)));
+            const k = Math.ceil(filtered.length / maxPoints);
             return filtered.filter(
                 (d, i) => ((i % k) === 0)
             );
         }
         return filtered;
-
     }
-    const maxPoints = 100
-    const renderedData = getData(fileData, maxPoints)
+    const sampledPoints = value //from dropdown menu
+    const sampledData = getData(fileData, sampledPoints)
 
     //Show Data points handler
     const [showDataPoints, setShowDataPoints] = useState(false)
@@ -84,13 +125,27 @@ const ClinicianSensorDetailScreen = (props) => {
         props.navigation.setParams({ 'dataPointsHandler': () => dataPointsHandler() })
     }, [dataPointsHandler])
 
-
     return (
         <View>
             {showContent ?
                 <View style={styles.screen}>
                     <Text style={styles.text}>{sensorTitle} Chart</Text>
-                    <Text>Date: {dateCreated} </Text>
+                    <Text>Date Imported: {dateCreated} </Text>
+                    <View style={styles.points}>
+                        <Text>Sample Points</Text>
+                        <DropDownPicker
+                            open={open}
+                            value={value}
+                            items={items}
+                            setOpen={setOpen}
+                            setValue={setValue}
+                            setItems={setItems}
+                            style={{
+                                backgroundColor: "#e6cfff"
+                            }}
+                        />
+                        <Text style={{ fontSize: 11 }}>*Note: Increase Sample Points reduces Performance</Text>
+                    </View>
                     <VictoryChart
                         width={screenWidth}
                         height={screenHeight / 1.5}
@@ -100,7 +155,6 @@ const ClinicianSensorDetailScreen = (props) => {
                                 zoomDimension="x"
                                 zoomDomain={zoomDomain}
                                 onZoomDomainChange={handleZoom}
-                            // downsample={samplingData}
                             />
                         }
                     >
@@ -112,7 +166,7 @@ const ClinicianSensorDetailScreen = (props) => {
                                 labels: { fontSize: ({ text }) => text.length > 10 ? 8 : 12 },
                             }}
 
-                            data={renderedData}
+                            data={sampledData}
                             x="x"
                             y="y"
                             labels={showDataPoints ? ({ datum }) => `x: ${datum.x}\n y: ${datum.y}` : null}
@@ -121,7 +175,7 @@ const ClinicianSensorDetailScreen = (props) => {
                         />
                     </VictoryChart>
 
-                    <VictoryChart
+                    {/* <VictoryChart
                         padding={{ top: 0, left: 50, right: 50, bottom: 50 }}
                         margin={{ bottom: 50 }}
                         width={screenWidth}
@@ -151,7 +205,7 @@ const ClinicianSensorDetailScreen = (props) => {
                             y="y"
 
                         />
-                    </VictoryChart>
+                    </VictoryChart> */}
                 </View>
                 : <View style={styles.activityIndicator}>
                     <ActivityIndicator size='large' color={Colors.primary} />
@@ -175,10 +229,8 @@ ClinicianSensorDetailScreen.navigationOptions = navData => {
                             text: 'Turn ON/OFF Data points',
                             onPress: () => dataPointsHandler()
                         }, { text: 'Go Back' }])
-
                     }}
                 />
-
             </View>
 
     }
@@ -188,9 +240,14 @@ ClinicianSensorDetailScreen.navigationOptions = navData => {
 const styles = StyleSheet.create({
     screen: {
         padding: 10,
-        // flex: 1,
         justifyContent: 'center',
         alignItems: 'center'
+    },
+    points: {
+        paddingVertical: 20,
+        paddingHorizontal: 20,
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     text: {
         fontWeight: 'bold',

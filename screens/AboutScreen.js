@@ -4,7 +4,6 @@ import { View, Text, StyleSheet } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import HeaderButton from '../components/HeaderButton'
 import Icon from 'react-native-vector-icons/Ionicons';
-import Colors from '../constants/Colors';
 
 
 // create a component
