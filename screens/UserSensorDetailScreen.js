@@ -56,10 +56,10 @@ const UserSensorDetailScreen = (props) => {
         <ScrollView >
             {showContent ?
                 <View style={styles.container}>
-                    <View style={styles.text}>
+                    {/* <View style={styles.text}>
                         <Text>Heart Rate</Text>
-                    </View>
-                    {isLoading ? null : <LineChart
+                    </View> */}
+                    {/* {isLoading ? null : <LineChart
                         data={{
                             labels: xLabelData,
                             datasets: [
@@ -125,7 +125,7 @@ const UserSensorDetailScreen = (props) => {
                             marginVertical: 10,
                             borderRadius: 16
                         }}
-                    />}
+                    />} */}
                     <Text>Daily Exercise</Text>
                     <ProgressChart
                         style={{ marginVertical: 30 }}

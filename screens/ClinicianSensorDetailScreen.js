@@ -48,15 +48,25 @@ const ClinicianSensorDetailScreen = (props) => {
         const data = dataObj.data
         setFileData(data)
 
-        //Get the elapsed time
+        //Show total elasped time from the file
+        const totalTime = data.length
+        // console.log(totalTime)
+        const elaspedHour = parseInt(totalTime / oneHourSamplePoint)
+        const modHour = totalTime % oneHourSamplePoint
+        const elapsedMinute = parseInt(modHour / oneMinuteSamplePoint)
+        const modMinute = modHour % oneMinuteSamplePoint
+        const elaspedSecond = parseInt(modMinute / oneSecondSamplePoint)
+
+        //Get the user selected elapsed time
         const selectedTimeAsXValues = selectedHour * oneHourSamplePoint + selectedMinute * oneMinuteSamplePoint + selectedSeconds * oneSecondSamplePoint
 
         //Check if selectedTime is out of bound of array
-        const maxPoints = data.length - 5000
+        const maxPoints = totalTime - oneSecondSamplePoint * 10
 
         //If it is, go pick another time
         if (selectedTimeAsXValues > maxPoints) {
-            Alert.alert("Data Not Exist", "Pick Another Elapsed Time", [{ text: 'Go Back', onPress: () => props.navigation.goBack() }])
+            Alert.alert("Data Out of Bound", `Pick A Time Last Than Total Elapsed Time\n\nTotal Elasped Time: \n${elaspedHour} hours, ${elapsedMinute} minutes, ${elaspedSecond} seconds`,
+                [{ text: 'Go Back', onPress: () => props.navigation.goBack() }])
         }
         else {
             // selectedTime + 5000 data points = 10 sec data
@@ -232,7 +242,6 @@ ClinicianSensorDetailScreen.navigationOptions = navData => {
                     }}
                 />
             </View>
-
     }
 }
 

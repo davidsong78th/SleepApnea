@@ -8,7 +8,7 @@ export const addUser = (title, document, dateCreated) => {
     return async (dispatch) => {
         try {
             const dbResult = await insertUser(title, document, dateCreated, 23.1)
-            console.log(dbResult)
+            // console.log(dbResult)
             dispatch({
                 type: ADD_USERS,
                 userData: {

@@ -8,6 +8,7 @@ import { FontAwesome5 } from '@expo/vector-icons'
 import Colors from '../constants/Colors';
 import * as userActions from '../store/users-action'
 import { useDispatch } from 'react-redux'
+import * as FileSystem from 'expo-file-system';
 
 
 const hours = new Array(11).fill('').map((item, index) => {
@@ -123,7 +124,7 @@ const UserSensorScreen = (props) => {
                     title={sensors[0]}
                     name="head-side-mask"
                     onSelect={() => {
-                        props.navigation.navigate('ClinicianSensorDetail', {
+                        props.navigation.navigate('UserSensorDetail', {
                             userDocument: userDocument,     //change this for each specific sensor file
                             sensorTitle: sensors[0],
                             dateCreated: dateCreated,
