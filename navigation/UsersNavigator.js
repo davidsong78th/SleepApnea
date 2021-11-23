@@ -13,7 +13,8 @@ import HelpScreen from "../screens/HelpScreen";
 import AboutScreen from "../screens/AboutScreen";
 import UserSensorScreen from '../screens/UserSensorScreen';
 import ClinicianSensorScreen from '../screens/ClinicianSensorScreen'
-import ClinicianSensorDetailScreen from '../screens/ClinicianSensorDetailScreen';
+import ClinicianSensorDetail500SampleSecScreen from '../screens/ClinicianSensorDetail500SampleSecScreen';
+import ClinicianSensorDetail1SampleSecScreen from '../screens/ClinicianSensorDetail1SampleSecScreen';
 
 const UsersNavigator = createStackNavigator({
     Users: ListScreen,
@@ -21,7 +22,8 @@ const UsersNavigator = createStackNavigator({
     NewLog: NewLogScreen,
     UserSensor: UserSensorScreen,
     ClinicianSensor: ClinicianSensorScreen,
-    ClinicianSensorDetail: ClinicianSensorDetailScreen
+    ClinicianSensorDetail500SampleSecScreen: ClinicianSensorDetail500SampleSecScreen,
+    ClinicianSensorDetail1SampleSecScreen: ClinicianSensorDetail1SampleSecScreen
 }, {
     defaultNavigationOptions: {
         headerStyle: {

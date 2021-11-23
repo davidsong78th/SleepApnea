@@ -7,7 +7,6 @@ import * as usersActions from '../store/users-action'
 import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system';
 import GreyCard from '../components/GreyCard';
-import { zip, unzip, unzipAssets, subscribe } from 'react-native-zip-archive';
 
 // create a component
 const NewLogScreen = (props) => {
@@ -52,17 +51,7 @@ const NewLogScreen = (props) => {
                     from: result.uri,
                     to: newDocumentPath
                 })
-                console.log(newDocumentPath)
-                // const targetPath = `${DocumentDirectoryPath}/myFile.zip`
-                // const sourcePath = DocumentDirectoryPath
 
-                // zip(sourcePath, targetPath)
-                //     .then((path) => {
-                //         console.log(`zip completed at ${path}`)
-                //     })
-                //     .catch((error) => {
-                //         console.error(error)
-                //     })
                 setSelectedDocument(newDocumentPath)
             } else {
                 return

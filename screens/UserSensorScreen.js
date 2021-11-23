@@ -59,7 +59,7 @@ const UserSensorScreen = (props) => {
     }, [deleteItemHandler])
 
     //Available Sensors for users
-    const sensors = ['AHI', 'Oximeter', 'ECG']
+    const sensors = ['AHI', 'Pressure', 'Oximeter', 'ECG']
 
     //Date Time Picker
     const [selectedHour, setSelectedHour] = useState(0);
@@ -67,7 +67,7 @@ const UserSensorScreen = (props) => {
     const [selectedSeconds, setSelectedSeconds] = useState(0);
 
     return (
-        <View>
+        <View style={styles.screen}>
             <View style={styles.bar}>
                 <Text style={styles.timestamp}>Elapsed Time</Text>
             </View>
@@ -138,7 +138,7 @@ const UserSensorScreen = (props) => {
                     title={sensors[1]}
                     name="heart"
                     onSelect={() => {
-                        props.navigation.navigate('ClinicianSensorDetail', {
+                        props.navigation.navigate('ClinicianSensorDetail1SampleSecScreen', {
                             userDocument: userDocument,  //change this for each specific sensor file
                             sensorTitle: sensors[1],
                             dateCreated: dateCreated,
@@ -152,7 +152,21 @@ const UserSensorScreen = (props) => {
                     title={sensors[2]}
                     name="heartbeat"
                     onSelect={() => {
-                        props.navigation.navigate('ClinicianSensorDetail', {
+                        props.navigation.navigate('ClinicianSensorDetail500SampleSecScreen', {
+                            userDocument: userDocument, //change this for each specific sensor file
+                            sensorTitle: sensors[2],
+                            dateCreated: dateCreated,
+                            selectedHour: selectedHour,
+                            selectedMinute: selectedMinute,
+                            selectedSeconds: selectedSeconds
+                        });
+                    }}
+                />
+                <SensorItem
+                    title={sensors[3]}
+                    name="heartbeat"
+                    onSelect={() => {
+                        props.navigation.navigate('ClinicianSensorDetail500SampleSecScreen', {
                             userDocument: userDocument, //change this for each specific sensor file
                             sensorTitle: sensors[2],
                             dateCreated: dateCreated,
@@ -206,6 +220,9 @@ UserSensorScreen.navigationOptions = navData => {
 
 // define your styles
 const styles = StyleSheet.create({
+    screen: {
+        flex: 1,
+    },
     bar: {
         flex: 1,
         alignItems: 'center',
