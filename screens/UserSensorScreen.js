@@ -8,7 +8,6 @@ import { FontAwesome5 } from '@expo/vector-icons'
 import Colors from '../constants/Colors';
 import * as userActions from '../store/users-action'
 import { useDispatch } from 'react-redux'
-import * as FileSystem from 'expo-file-system';
 
 
 const hours = new Array(11).fill('').map((item, index) => {
@@ -34,7 +33,14 @@ const Item = ({ text, isSelected, onPress }) => {
 // create a component
 const UserSensorScreen = (props) => {
     //Get props passed from ListScreen
-    const userDocument = props.navigation.getParam('userDocument')
+    const userECGLog = props.navigation.getParam('userECGLog')
+    const userEEGLog = props.navigation.getParam('userEEGLog')
+    const userOxymeterLog = props.navigation.getParam('userOxymeterLog')
+    const userPressureLog = props.navigation.getParam('userPressureLog')
+    const userFlowLog = props.navigation.getParam('userFlowLog')
+    console.log(userFlowLog)
+    console.log(userPressureLog)
+    const userSnoreLog = props.navigation.getParam('userSnoreLog')
     const dateCreated = props.navigation.getParam('dateCreated')
     const userId = props.navigation.getParam('userId')
     const userTitle = props.navigation.getParam('userTitle')
@@ -59,7 +65,7 @@ const UserSensorScreen = (props) => {
     }, [deleteItemHandler])
 
     //Available Sensors for users
-    const sensors = ['AHI', 'Pressure', 'Oximeter', 'ECG']
+    const sensors = ['Flow', 'Pressure', 'Oximeter', 'EEG']
 
     //Date Time Picker
     const [selectedHour, setSelectedHour] = useState(0);
@@ -124,8 +130,8 @@ const UserSensorScreen = (props) => {
                     title={sensors[0]}
                     name="head-side-mask"
                     onSelect={() => {
-                        props.navigation.navigate('UserSensorDetail', {
-                            userDocument: userDocument,     //change this for each specific sensor file
+                        props.navigation.navigate('ClinicianSensorDetail500SampleSecScreen', {
+                            userDocument: userFlowLog,     //change this for each specific sensor file
                             sensorTitle: sensors[0],
                             dateCreated: dateCreated,
                             selectedHour: selectedHour,
@@ -138,8 +144,8 @@ const UserSensorScreen = (props) => {
                     title={sensors[1]}
                     name="heart"
                     onSelect={() => {
-                        props.navigation.navigate('ClinicianSensorDetail1SampleSecScreen', {
-                            userDocument: userDocument,  //change this for each specific sensor file
+                        props.navigation.navigate('ClinicianSensorDetail500SampleSecScreen', {
+                            userDocument: userPressureLog,  //change this for each specific sensor file
                             sensorTitle: sensors[1],
                             dateCreated: dateCreated,
                             selectedHour: selectedHour,
@@ -153,7 +159,7 @@ const UserSensorScreen = (props) => {
                     name="heartbeat"
                     onSelect={() => {
                         props.navigation.navigate('ClinicianSensorDetail500SampleSecScreen', {
-                            userDocument: userDocument, //change this for each specific sensor file
+                            userDocument: userOxymeterLog, //change this for each specific sensor file
                             sensorTitle: sensors[2],
                             dateCreated: dateCreated,
                             selectedHour: selectedHour,
@@ -167,7 +173,8 @@ const UserSensorScreen = (props) => {
                     name="heartbeat"
                     onSelect={() => {
                         props.navigation.navigate('ClinicianSensorDetail500SampleSecScreen', {
-                            userDocument: userDocument, //change this for each specific sensor file
+                            // userDocument: userDocument, //change this for each specific sensor file
+                            userDocument: userEEGLog,
                             sensorTitle: sensors[2],
                             dateCreated: dateCreated,
                             selectedHour: selectedHour,
@@ -181,10 +188,14 @@ const UserSensorScreen = (props) => {
     );
 };
 
-
 UserSensorScreen.navigationOptions = navData => {
     const deleteItemHandler = navData.navigation.getParam('deleteItemHandler')
-    const userDocument = navData.navigation.getParam('userDocument')
+    const userECGLog = navData.navigation.getParam('userECGLog')
+    const userEEGLog = navData.navigation.getParam('userEEGLog')
+    const userOxymeterLog = navData.navigation.getParam('userOxymeterLog')
+    const userPressureLog = navData.navigation.getParam('userPressureLog')
+    const userFlowLog = navData.navigation.getParam('userFlowLog')
+    const userSnoreLog = navData.navigation.getParam('userSnoreLog')
     const dateCreated = navData.navigation.getParam('dateCreated')
 
     return {
@@ -206,7 +217,12 @@ UserSensorScreen.navigationOptions = navData => {
                         Alert.alert("Disclaimer...", "This is for Clinician Use ONLY", [{
                             text: 'I Am A Clinician',
                             onPress: () => navData.navigation.navigate('ClinicianSensor', {
-                                userDocument: userDocument,
+                                userECGLog: userECGLog,
+                                userEEGLog: userEEGLog,
+                                userOxymeterLog: userOxymeterLog,
+                                userPressureLog: userPressureLog,
+                                userFlowLog: userFlowLog,
+                                userSnoreLog: userSnoreLog,
                                 dateCreated: dateCreated,
                             })
                         }, { text: 'Back' }])

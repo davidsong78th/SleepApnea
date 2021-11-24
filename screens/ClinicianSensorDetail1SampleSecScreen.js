@@ -13,6 +13,11 @@ import DropDownPicker from 'react-native-dropdown-picker';
 const ClinicianSensorDetailScreen = (props) => {
     //Get data passed from parent
     const documentPath = props.navigation.getParam('userDocument')
+    if (!documentPath) {
+        Alert.alert("Data Not Imported", `Import the Data Properly`,
+            [{ text: 'Go Back', onPress: () => props.navigation.goBack() }])
+        return false
+    }
     const sensorTitle = props.navigation.getParam('sensorTitle')
     const dateCreated = props.navigation.getParam('dateCreated')
 
@@ -65,7 +70,7 @@ const ClinicianSensorDetailScreen = (props) => {
 
         //If it is, go pick another time
         if (selectedTimeAsXValues > maxPoints) {
-            Alert.alert("Data Out of Bound", `Pick A Time Last Than Total Elapsed Time\n\nTotal Elasped Time: \n${elaspedHour} hours, ${elapsedMinute} minutes, ${elaspedSecond} seconds`,
+            Alert.alert("Data Out of Bound", `\nTotal Elasped Time: \n${elaspedHour} hours, ${elapsedMinute} minutes, ${elaspedSecond} seconds\n\nPick Sample Time Last Than Total Elapsed Time by 10 seconds`,
                 [{ text: 'Go Back', onPress: () => props.navigation.goBack() }])
         }
         else {

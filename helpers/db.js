@@ -7,7 +7,7 @@ export const init = () => {
     const promise = new Promise((resolve, reject) => {
         db.transaction((tx) => {
             tx.executeSql(
-                'CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY NOT NULL, title TEXT NOT NULL, document TEXT NOT NULL, dateCreated TEXT NOT NULL, lng REAL NOT NULL);',
+                'CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY NOT NULL, title TEXT NOT NULL, ECGLog TEXT NOT NULL, EEGLog TEXT, OxymeterLog TEXT, PressureLog TEXT, FlowLog TEXT, SnoreLog TEXT, dateCreated TEXT NOT NULL);',
                 [],
                 () => {
                     resolve()
@@ -22,12 +22,12 @@ export const init = () => {
 
 }
 
-export const insertUser = (title, document, dateCreated, lng) => {
+export const insertUser = (title, ECGLog, EEGLog, OxymeterLog, PressureLog, FlowLog, SnoreLog, dateCreated) => {
     const promise = new Promise((resolve, reject) => {
         db.transaction((tx) => {
             tx.executeSql(
-                `INSERT INTO users (title, document, dateCreated, lng) VALUES (?, ?, ?, ?);`,
-                [title, document, dateCreated, lng],
+                `INSERT INTO users (title, ECGLog, EEGLog, OxymeterLog, PressureLog, FlowLog, SnoreLog, dateCreated) VALUES (?, ?, ?, ?, ?, ?, ?, ?);`,
+                [title, ECGLog, EEGLog, OxymeterLog, PressureLog, FlowLog, SnoreLog, dateCreated],
                 (_, result) => {
                     resolve(result)
                 },

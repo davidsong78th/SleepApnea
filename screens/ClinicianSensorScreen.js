@@ -26,10 +26,15 @@ const Item = ({ text, isSelected, onPress }) => {
 // create a component
 const ClinicianSensorScreen = (props) => {
 
-    const sensors = ['AHI', 'Oximeter', 'Pressure', 'Microphone', 'EEG', 'ECG']
+    const sensors = ['ECG', 'EEG', 'Oxymeter', 'Pressure', 'Flow', 'Snore']
 
     //Pass props from parent
-    const userDocument = props.navigation.getParam('userDocument')
+    const userECGLog = props.navigation.getParam('userECGLog')
+    const userEEGLog = props.navigation.getParam('userEEGLog')
+    const userOxymeterLog = props.navigation.getParam('userOxymeterLog')
+    const userPressureLog = props.navigation.getParam('userPressureLog')
+    const userFlowLog = props.navigation.getParam('userFlowLog')
+    const userSnoreLog = props.navigation.getParam('userSnoreLog')
     const dateCreated = props.navigation.getParam('dateCreated')
 
     //Date Time Picker
@@ -95,7 +100,7 @@ const ClinicianSensorScreen = (props) => {
                     name="heartbeat"
                     onSelect={() => {
                         props.navigation.navigate('ClinicianSensorDetail1SampleSecScreen', {
-                            userDocument: userDocument,     //change this for each specific sensor file
+                            userDocument: userECGLog,     //change this for each specific sensor file
                             sensorTitle: sensors[0],
                             dateCreated: dateCreated,
                             selectedHour: selectedHour,
@@ -109,7 +114,7 @@ const ClinicianSensorScreen = (props) => {
                     name="heartbeat"
                     onSelect={() => {
                         props.navigation.navigate('ClinicianSensorDetail1SampleSecScreen', {
-                            userDocument: userDocument,  //change this for each specific sensor file
+                            userDocument: userEEGLog,  //change this for each specific sensor file
                             sensorTitle: sensors[1],
                             dateCreated: dateCreated,
                             selectedHour: selectedHour,
@@ -123,7 +128,7 @@ const ClinicianSensorScreen = (props) => {
                     name="heartbeat"
                     onSelect={() => {
                         props.navigation.navigate('ClinicianSensorDetail1SampleSecScreen', {
-                            userDocument: userDocument, //change this for each specific sensor file
+                            userDocument: userOxymeterLog, //change this for each specific sensor file
                             sensorTitle: sensors[2],
                             dateCreated: dateCreated,
                             selectedHour: selectedHour,
@@ -137,7 +142,7 @@ const ClinicianSensorScreen = (props) => {
                     name="heartbeat"
                     onSelect={() => {
                         props.navigation.navigate('ClinicianSensorDetail1SampleSecScreen', {
-                            userDocument: userDocument,     //change this for each specific sensor file
+                            userDocument: userPressureLog,     //change this for each specific sensor file
                             sensorTitle: sensors[3],
                             dateCreated: dateCreated,
                             selectedHour: selectedHour,
@@ -151,7 +156,7 @@ const ClinicianSensorScreen = (props) => {
                     name="heartbeat"
                     onSelect={() => {
                         props.navigation.navigate('ClinicianSensorDetail500SampleSecScreen', {
-                            userDocument: userDocument,     //change this for each specific sensor file
+                            userDocument: userFlowLog,     //change this for each specific sensor file
                             sensorTitle: sensors[4],
                             dateCreated: dateCreated,
                             selectedHour: selectedHour,
@@ -165,7 +170,7 @@ const ClinicianSensorScreen = (props) => {
                     name="heartbeat"
                     onSelect={() => {
                         props.navigation.navigate('ClinicianSensorDetail500SampleSecScreen', {
-                            userDocument: userDocument,     //change this for each specific sensor file
+                            userDocument: userSnoreLog,     //change this for each specific sensor file
                             sensorTitle: sensors[5],
                             dateCreated: dateCreated,
                             selectedHour: selectedHour,

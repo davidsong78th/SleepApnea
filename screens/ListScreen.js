@@ -66,13 +66,19 @@ const ListScreen = (props) => {
                     data={users}
                     keyExtractor={item => item.id}
                     renderItem={itemData => {
+                        console.log(itemData.item)
                         return (
                             <UserItem
                                 title={itemData.item.title}
                                 dateCreated={itemData.item.dateCreated}
                                 onSelect={() => {
                                     props.navigation.navigate('UserSensor', {
-                                        userDocument: itemData.item.document,
+                                        userECGLog: itemData.item.ECGLog,
+                                        userEEGLog: itemData.item.EEGLog,
+                                        userOxymeterLog: itemData.item.OxymeterLog,
+                                        userPressureLog: itemData.item.PressureLog,
+                                        userFlowLog: itemData.item.FlowLog,
+                                        userSnoreLog: itemData.item.SnoreLog,
                                         dateCreated: itemData.item.dateCreated,
                                         userTitle: itemData.item.title,
                                         userId: itemData.item.id,
