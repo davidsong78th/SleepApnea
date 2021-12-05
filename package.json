@@ -1,9 +1,8 @@
 {
-  "main": "node_modules/expo/AppEntry.js",
   "scripts": {
     "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
     "web": "expo start --web",
     "eject": "expo eject"
   },
@@ -17,11 +16,12 @@
     "expo-status-bar": "~1.0.4",
     "react": "16.13.1",
     "react-dom": "16.13.1",
-    "react-native": "https://github.com/expo/react-native/archive/sdk-42.0.0.tar.gz",
+    "react-native": "~0.63.4",
     "react-native-alert-async": "^1.0.5",
     "react-native-chart-kit": "^6.11.0",
     "react-native-document-picker": "^6.0.4",
     "react-native-dropdown-picker": "^5.2.3",
+    "react-native-fs": "^2.18.0",
     "react-native-gesture-handler": "^1.10.3",
     "react-native-reanimated": "1.13.1",
     "react-native-screens": "^3.7.2",
@@ -36,10 +36,15 @@
     "react-vector-icons": "^0.0.1",
     "redux": "^4.1.1",
     "redux-thunk": "^2.3.0",
-    "victory-native": "^33.0.0"
+    "victory-native": "^33.0.0",
+    "expo-splash-screen": "~0.11.2",
+    "expo-updates": "~0.8.1",
+    "react-native-unimodules": "0.14.10"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0"
   },
-  "private": true
+  "private": true,
+  "name": "SleepApnea",
+  "version": "1.0.0"
 }

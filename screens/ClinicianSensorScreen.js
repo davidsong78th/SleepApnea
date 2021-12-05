@@ -26,7 +26,7 @@ const Item = ({ text, isSelected, onPress }) => {
 // create a component
 const ClinicianSensorScreen = (props) => {
 
-    const sensors = ['ECG', 'EEG', 'Oxymeter', 'Pressure', 'Flow', 'Snore']
+    const sensors = ['ECG', 'EEG', 'Oxymeter', 'Respiratory Movement', 'AirFlow', 'Snore']
 
     //Pass props from parent
     const userECGLog = props.navigation.getParam('userECGLog')
@@ -94,12 +94,43 @@ const ClinicianSensorScreen = (props) => {
                     </ScrollView>
                 </View>
             </View>
+            <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                <Text style={{ fontSize: 11 }}>*Note: Sp02 is NOT affected by Elasped Time</Text>
+            </View>
             <ScrollView>
                 <SensorItem
-                    title={sensors[0]}
-                    name="heartbeat"
+                    title="Sp02 Event"
+                    name="head-side-mask"
                     onSelect={() => {
-                        props.navigation.navigate('ClinicianSensorDetail1SampleSecScreen', {
+                        props.navigation.navigate('UserSensorSp02Detail', {
+                            userDocument: userOxymeterLog,     //use Oxymeter to caluclate AHI
+                            sensorTitle: "Sp02",
+                            dateCreated: dateCreated,
+                            selectedHour: selectedHour,
+                            selectedMinute: selectedMinute,
+                            selectedSeconds: selectedSeconds
+                        });
+                    }}
+                />
+                <SensorItem
+                    title={sensors[3]}
+                    name="prescription-bottle-alt"
+                    onSelect={() => {
+                        props.navigation.navigate('ClinicianSensorDetail1SampleSec', {
+                            userDocument: userPressureLog,     //change this for each specific sensor file
+                            sensorTitle: sensors[3],
+                            dateCreated: dateCreated,
+                            selectedHour: selectedHour,
+                            selectedMinute: selectedMinute,
+                            selectedSeconds: selectedSeconds
+                        });
+                    }}
+                />
+                <SensorItem
+                    title={sensors[0]}
+                    name="heart"
+                    onSelect={() => {
+                        props.navigation.navigate('ClinicianSensorDetail500SampleSec', {
                             userDocument: userECGLog,     //change this for each specific sensor file
                             sensorTitle: sensors[0],
                             dateCreated: dateCreated,
@@ -113,7 +144,7 @@ const ClinicianSensorScreen = (props) => {
                     title={sensors[1]}
                     name="heartbeat"
                     onSelect={() => {
-                        props.navigation.navigate('ClinicianSensorDetail1SampleSecScreen', {
+                        props.navigation.navigate('ClinicianSensorDetail500SampleSec', {
                             userDocument: userEEGLog,  //change this for each specific sensor file
                             sensorTitle: sensors[1],
                             dateCreated: dateCreated,
@@ -125,9 +156,9 @@ const ClinicianSensorScreen = (props) => {
                 />
                 <SensorItem
                     title={sensors[2]}
-                    name="heartbeat"
+                    name="head-side-cough"
                     onSelect={() => {
-                        props.navigation.navigate('ClinicianSensorDetail1SampleSecScreen', {
+                        props.navigation.navigate('ClinicianSensorDetail1SampleSec', {
                             userDocument: userOxymeterLog, //change this for each specific sensor file
                             sensorTitle: sensors[2],
                             dateCreated: dateCreated,
@@ -138,24 +169,10 @@ const ClinicianSensorScreen = (props) => {
                     }}
                 />
                 <SensorItem
-                    title={sensors[3]}
-                    name="heartbeat"
-                    onSelect={() => {
-                        props.navigation.navigate('ClinicianSensorDetail1SampleSecScreen', {
-                            userDocument: userPressureLog,     //change this for each specific sensor file
-                            sensorTitle: sensors[3],
-                            dateCreated: dateCreated,
-                            selectedHour: selectedHour,
-                            selectedMinute: selectedMinute,
-                            selectedSeconds: selectedSeconds
-                        });
-                    }}
-                />
-                <SensorItem
                     title={sensors[4]}
-                    name="heartbeat"
+                    name="medrt"
                     onSelect={() => {
-                        props.navigation.navigate('ClinicianSensorDetail500SampleSecScreen', {
+                        props.navigation.navigate('ClinicianSensorDetail1SampleSec', {
                             userDocument: userFlowLog,     //change this for each specific sensor file
                             sensorTitle: sensors[4],
                             dateCreated: dateCreated,
@@ -167,9 +184,9 @@ const ClinicianSensorScreen = (props) => {
                 />
                 <SensorItem
                     title={sensors[5]}
-                    name="heartbeat"
+                    name="bed"
                     onSelect={() => {
-                        props.navigation.navigate('ClinicianSensorDetail500SampleSecScreen', {
+                        props.navigation.navigate('ClinicianSensorDetail100SampleSec', {
                             userDocument: userSnoreLog,     //change this for each specific sensor file
                             sensorTitle: sensors[5],
                             dateCreated: dateCreated,
@@ -194,13 +211,13 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     time: {
-        flex: 1,
+        // flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        marginTop: 20
+        // marginTop: 10
     },
     timestamp: {
-        marginVertical: 10,
+        marginTop: 10,
         fontWeight: 'bold',
         fontSize: 17,
     },
@@ -208,7 +225,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         height: 135,
         padding: 10,
-        marginTop: 10,
+        // marginTop: 10,
         alignItems: 'center',
         justifyContent: 'center',
     },

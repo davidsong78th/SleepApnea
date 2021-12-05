@@ -19,25 +19,15 @@ const ClinicianSensorDetailScreen = (props) => {
         return false
     }
     const sensorTitle = props.navigation.getParam('sensorTitle')
-    var axisLabel = ""
-    if (sensorTitle == "Oxymeter") {
-        axisLabel = "Percentage %"
-    }
-    if (sensorTitle == "Respiratory Movement") {
-        axisLabel = "Voltage (V)"
-    }
-    else {
-        axisLabel = "kPa"
-    }
     const dateCreated = props.navigation.getParam('dateCreated')
 
     const selectedHour = props.navigation.getParam('selectedHour')
     const selectedMinute = props.navigation.getParam('selectedMinute')
     const selectedSeconds = props.navigation.getParam('selectedSeconds')
 
-    const oneSecondSamplePoint = 1
-    const oneMinuteSamplePoint = 60
-    const oneHourSamplePoint = 3600
+    const oneSecondSamplePoint = 100
+    const oneMinuteSamplePoint = 6000
+    const oneHourSamplePoint = 360000
 
     //Setup data and read inputs
     const [fileData, setFileData] = useState([])
@@ -46,11 +36,11 @@ const ClinicianSensorDetailScreen = (props) => {
 
     // //Dropdown menu
     const [open, setOpen] = useState(false);
-    const [value, setValue] = useState(10);
+    const [value, setValue] = useState(100);
     const [items, setItems] = useState([
-        { label: '10', value: 10 },
-        { label: '50', value: 50 },
-        { label: '100', value: 100 }
+        { label: 'Low', value: 100 },
+        { label: 'Medium', value: 500 },
+        { label: 'High', value: 1000 }
     ]);
     // // console.log(value)
 
@@ -58,7 +48,16 @@ const ClinicianSensorDetailScreen = (props) => {
         const fileString = await FileSystem.readAsStringAsync(documentPath)
         const dataObj = JSON.parse(fileString)
 
-        const data = dataObj.data
+        var data = dataObj.data
+        data = data.map((item, index) => {
+            item.x = item.x / 100
+            item.y = (item.y * 3.3) / 4096
+            var obj = {}
+            obj["x"] = item.x
+            obj["y"] = item.y
+            return obj;
+        })
+        // console.log(data)
         setFileData(data)
 
         //Show total elasped time from the file
@@ -128,6 +127,7 @@ const ClinicianSensorDetailScreen = (props) => {
     }
     const sampledPoints = value //from dropdown menu
     const sampledData = getData(fileData, sampledPoints)
+    // console.log(sampledData)
 
     //Show Data points handler
     const [showDataPoints, setShowDataPoints] = useState(false)
@@ -147,7 +147,7 @@ const ClinicianSensorDetailScreen = (props) => {
                     <Text style={styles.text}>{sensorTitle} Chart</Text>
                     <Text>Date Imported: {dateCreated} </Text>
                     <View style={styles.points}>
-                        <Text>Sample Points</Text>
+                        <Text>{sensorTitle == "Snore" ? "Resolution" : "Sample Points"}</Text>
                         <DropDownPicker
                             open={open}
                             value={value}
@@ -177,8 +177,9 @@ const ClinicianSensorDetailScreen = (props) => {
                         }
                     >
                         <VictoryAxis
-                            label={axisLabel}
+                            label="Voltage (V)"
                             dependentAxis
+                            style={{ axisLabel: { paddingLeft: 30 } }}
                         />
                         <VictoryLine
                             style={{
@@ -234,7 +235,7 @@ const styles = StyleSheet.create({
     screen: {
         padding: 10,
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
     },
     points: {
         paddingTop: 20,

@@ -15,6 +15,9 @@ import UserSensorScreen from '../screens/UserSensorScreen';
 import ClinicianSensorScreen from '../screens/ClinicianSensorScreen'
 import ClinicianSensorDetail500SampleSecScreen from '../screens/ClinicianSensorDetail500SampleSecScreen';
 import ClinicianSensorDetail1SampleSecScreen from '../screens/ClinicianSensorDetail1SampleSecScreen';
+import ClinicianSensorDetail100SampleSecScreen from '../screens/ClinicianSensorDetail100SampleSecScreen';
+import ClinicianSensorSp02DetailScreen from '../screens/ClinicianSensorSp02DetailScreen'
+import ClinicianSensorPressureDetailScreen from '../screens/ClinicianSensorPressureDetailScreen'
 
 const UsersNavigator = createStackNavigator({
     Users: ListScreen,
@@ -22,8 +25,11 @@ const UsersNavigator = createStackNavigator({
     NewLog: NewLogScreen,
     UserSensor: UserSensorScreen,
     ClinicianSensor: ClinicianSensorScreen,
-    ClinicianSensorDetail500SampleSecScreen: ClinicianSensorDetail500SampleSecScreen,
-    ClinicianSensorDetail1SampleSecScreen: ClinicianSensorDetail1SampleSecScreen
+    ClinicianSensorDetail500SampleSec: ClinicianSensorDetail500SampleSecScreen,
+    ClinicianSensorDetail1SampleSec: ClinicianSensorDetail1SampleSecScreen,
+    ClinicianSensorDetail100SampleSec: ClinicianSensorDetail100SampleSecScreen,
+    ClinicianSensorPressureDetail: ClinicianSensorSp02DetailScreen,
+    ClinicianSensorPressureDetail: ClinicianSensorPressureDetailScreen,
 }, {
     defaultNavigationOptions: {
         headerStyle: {

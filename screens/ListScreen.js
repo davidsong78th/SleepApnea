@@ -66,7 +66,6 @@ const ListScreen = (props) => {
                     data={users}
                     keyExtractor={item => item.id}
                     renderItem={itemData => {
-                        console.log(itemData.item)
                         return (
                             <UserItem
                                 title={itemData.item.title}

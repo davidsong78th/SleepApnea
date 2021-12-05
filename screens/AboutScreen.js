@@ -10,9 +10,11 @@ import Icon from 'react-native-vector-icons/Ionicons';
 const AboutScreen = (props) => {
     return (
         <View style={styles.screen}>
-            {/* <Text>About Screen</Text> */}
-            <Text>Created using React Native</Text>
+            <Text>Designed with React Native</Text>
+            <Text>Team 1307, Senior Design Fall 2021</Text>
             <Icon name="ios-logo-react" size={100} color="#61DBFB" />
+            <Text>David Song, Ivan Pantoja</Text>
+            <Text>Jignesh Mangarolia, Adam Gruszecki, Tanner Doidge</Text>
         </View>
     )
 };

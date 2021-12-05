@@ -36,11 +36,11 @@ const NewLogScreen = (props) => {
     }
 
     const saveUserHandler = () => {
-        if (selectedECGLog) {
+        if ((selectedOxymeterLog && selectedPressureLog) || (selectedECGLog || selectedEEGLog || selectedPressureLog || selectedFlowLog || selectedSnoreLog)) {
             dispatch(usersActions.addUser(titleValue, selectedECGLog, selectedEEGLog, selectedOxymeterLog, selectedPressureLog, selectedFlowLog, selectedSnoreLog, dateCreated))
             props.navigation.goBack()
         } else {
-            Alert.alert('Data Log Attachment Needed', 'Add ECG Data Log at least', [{ text: 'Okay' }])
+            Alert.alert('Data Log Attachment Needed', 'Add Oxymeter and Pressure at Minimum', [{ text: 'Okay' }])
             return
         }
     }
@@ -48,9 +48,10 @@ const NewLogScreen = (props) => {
     //For import log JSON
     const pickECGLogHandler = async () => {
         if (Platform.OS === 'android') {
-            const result = await DocumentPicker.getDocumentAsync({ type: "*/*", copyToCacheDirectory: false, });
+            const result = await DocumentPicker.getDocumentAsync({ type: "*/*", copyToCacheDirectory: false });
             if (result.type === 'success') {
                 const documentName = result.name
+                // console.log(result)
                 const newDocumentPath = FileSystem.documentDirectory + documentName
                 await FileSystem.copyAsync({
                     from: result.uri,
@@ -90,6 +91,19 @@ const NewLogScreen = (props) => {
             } else {
                 return
             }
+        } else { //For IOS
+            const result = await DocumentPicker.getDocumentAsync({ type: "*/*" })
+            if (result.type === 'success') {
+                const documentName = result.uri.split('/').pop()
+                const newDocumentPath = FileSystem.documentDirectory + documentName
+                await FileSystem.moveAsync({
+                    from: result.uri,
+                    to: newDocumentPath
+                })
+                setSelectedEEGLog(newDocumentPath)
+            } else {
+                return
+            }
         }
     }
 
@@ -100,6 +114,19 @@ const NewLogScreen = (props) => {
                 const documentName = result.name
                 const newDocumentPath = FileSystem.documentDirectory + documentName
                 await FileSystem.copyAsync({
+                    from: result.uri,
+                    to: newDocumentPath
+                })
+                setSelectedOxymeterLog(newDocumentPath)
+            } else {
+                return
+            }
+        } else { //For IOS
+            const result = await DocumentPicker.getDocumentAsync({ type: "*/*" })
+            if (result.type === 'success') {
+                const documentName = result.uri.split('/').pop()
+                const newDocumentPath = FileSystem.documentDirectory + documentName
+                await FileSystem.moveAsync({
                     from: result.uri,
                     to: newDocumentPath
                 })
@@ -124,6 +151,19 @@ const NewLogScreen = (props) => {
             } else {
                 return
             }
+        } else { //For IOS
+            const result = await DocumentPicker.getDocumentAsync({ type: "*/*" })
+            if (result.type === 'success') {
+                const documentName = result.uri.split('/').pop()
+                const newDocumentPath = FileSystem.documentDirectory + documentName
+                await FileSystem.moveAsync({
+                    from: result.uri,
+                    to: newDocumentPath
+                })
+                setSelectedPressureLog(newDocumentPath)
+            } else {
+                return
+            }
         }
     }
 
@@ -134,6 +174,19 @@ const NewLogScreen = (props) => {
                 const documentName = result.name
                 const newDocumentPath = FileSystem.documentDirectory + documentName
                 await FileSystem.copyAsync({
+                    from: result.uri,
+                    to: newDocumentPath
+                })
+                setSelectedFlowLog(newDocumentPath)
+            } else {
+                return
+            }
+        } else { //For IOS
+            const result = await DocumentPicker.getDocumentAsync({ type: "*/*" })
+            if (result.type === 'success') {
+                const documentName = result.uri.split('/').pop()
+                const newDocumentPath = FileSystem.documentDirectory + documentName
+                await FileSystem.moveAsync({
                     from: result.uri,
                     to: newDocumentPath
                 })
@@ -158,6 +211,19 @@ const NewLogScreen = (props) => {
             } else {
                 return
             }
+        } else { //For IOS
+            const result = await DocumentPicker.getDocumentAsync({ type: "*/*" })
+            if (result.type === 'success') {
+                const documentName = result.uri.split('/').pop()
+                const newDocumentPath = FileSystem.documentDirectory + documentName
+                await FileSystem.moveAsync({
+                    from: result.uri,
+                    to: newDocumentPath
+                })
+                setSelectedSnoreLog(newDocumentPath)
+            } else {
+                return
+            }
         }
     }
 
@@ -168,45 +234,15 @@ const NewLogScreen = (props) => {
                 <TextInput style={styles.textInput}
                     onChangeText={titleChangeHandler}
                     value={titleValue}
-                    placeholder={"Ex. log1"}
+                    placeholder={"Ex. Log1"}
                 />
             </GreyCard>
-            <Text style={styles.label}>Import ECG Log</Text>
-            <View style={styles.logSelector}>
-                {selectedECGLog ? <View style={styles.text} >
-                    <Text style={{ color: 'green', fontSize: 15 }}>ECG Log Selected!</Text>
-                </View> : <View style={styles.text} >
-                    <Text style={{ color: 'red', fontSize: 15 }}>No ECG Log Selected. Attach a Log.</Text>
-                </View>}
-                <View style={[styles.button, { backgroundColor: Platform.OS == 'ios' ? "#4b88f2" : '' }]}>
-                    <Button
-                        title="Select ECG Log"
-                        onPress={pickECGLogHandler}
-                        color={Platform.OS == 'ios' ? "white" : ''}
-                    />
-                </View>
-            </View>
-            <Text style={styles.label}>Import EEG Log</Text>
-            <View style={styles.logSelector}>
-                {selectedEEGLog ? <View style={styles.text} >
-                    <Text style={{ color: 'green', fontSize: 15 }}>EEG Log Selected!</Text>
-                </View> : <View style={styles.text} >
-                    <Text style={{ color: 'red', fontSize: 15 }}>No EEG Log Selected. Attach a Log.</Text>
-                </View>}
-                <View style={[styles.button, { backgroundColor: Platform.OS == 'ios' ? "#4b88f2" : '' }]}>
-                    <Button
-                        title="Select EEG Log"
-                        onPress={pickEEGLogHandler}
-                        color={Platform.OS == 'ios' ? "white" : ''}
-                    />
-                </View>
-            </View>
             <Text style={styles.label}>Import Oxymeter Log</Text>
             <View style={styles.logSelector}>
                 {selectedOxymeterLog ? <View style={styles.text} >
-                    <Text style={{ color: 'green', fontSize: 15 }}>Oxymeter Log Selected!</Text>
+                    <Text style={{ color: 'green', fontSize: 14 }}>Oxymeter Log Selected!</Text>
                 </View> : <View style={styles.text} >
-                    <Text style={{ color: 'red', fontSize: 15 }}>No Oxymeter Log Selected. Attach a Log.</Text>
+                    <Text style={{ color: 'red', fontSize: 14 }}>No Oxymeter Log Selected. Attach a Log.</Text>
                 </View>}
                 <View style={[styles.button, { backgroundColor: Platform.OS == 'ios' ? "#4b88f2" : '' }]}>
                     <Button
@@ -219,9 +255,9 @@ const NewLogScreen = (props) => {
             <Text style={styles.label}>Import Pressure Log</Text>
             <View style={styles.logSelector}>
                 {selectedPressureLog ? <View style={styles.text} >
-                    <Text style={{ color: 'green', fontSize: 15 }}>Pressure Log Selected!</Text>
+                    <Text style={{ color: 'green', fontSize: 14 }}>Pressure Log Selected!</Text>
                 </View> : <View style={styles.text} >
-                    <Text style={{ color: 'red', fontSize: 15 }}>No Pressure Log Selected. Attach a Log.</Text>
+                    <Text style={{ color: 'red', fontSize: 14 }}>No Pressure Log Selected. Attach a Log.</Text>
                 </View>}
                 <View style={[styles.button, { backgroundColor: Platform.OS == 'ios' ? "#4b88f2" : '' }]}>
                     <Button
@@ -231,12 +267,42 @@ const NewLogScreen = (props) => {
                     />
                 </View>
             </View>
+            <Text style={styles.label}>Import ECG Log</Text>
+            <View style={styles.logSelector}>
+                {selectedECGLog ? <View style={styles.text} >
+                    <Text style={{ color: 'green', fontSize: 14 }}>ECG Log Selected!</Text>
+                </View> : <View style={styles.text} >
+                    <Text style={{ color: 'red', fontSize: 14 }}>No ECG Log Selected. Attach a Log.</Text>
+                </View>}
+                <View style={[styles.button, { backgroundColor: Platform.OS == 'ios' ? "#4b88f2" : '' }]}>
+                    <Button
+                        title="Select ECG Log"
+                        onPress={pickECGLogHandler}
+                        color={Platform.OS == 'ios' ? "white" : ''}
+                    />
+                </View>
+            </View>
+            <Text style={styles.label}>Import EEG Log</Text>
+            <View style={styles.logSelector}>
+                {selectedEEGLog ? <View style={styles.text} >
+                    <Text style={{ color: 'green', fontSize: 14 }}>EEG Log Selected!</Text>
+                </View> : <View style={styles.text} >
+                    <Text style={{ color: 'red', fontSize: 14 }}>No EEG Log Selected. Attach a Log.</Text>
+                </View>}
+                <View style={[styles.button, { backgroundColor: Platform.OS == 'ios' ? "#4b88f2" : '' }]}>
+                    <Button
+                        title="Select EEG Log"
+                        onPress={pickEEGLogHandler}
+                        color={Platform.OS == 'ios' ? "white" : ''}
+                    />
+                </View>
+            </View>
             <Text style={styles.label}>Import Flow Log</Text>
             <View style={styles.logSelector}>
                 {selectedFlowLog ? <View style={styles.text} >
-                    <Text style={{ color: 'green', fontSize: 15 }}>Flow Log Selected!</Text>
+                    <Text style={{ color: 'green', fontSize: 14 }}>Flow Log Selected!</Text>
                 </View> : <View style={styles.text} >
-                    <Text style={{ color: 'red', fontSize: 15 }}>No Flow Log Selected. Attach a Log.</Text>
+                    <Text style={{ color: 'red', fontSize: 14 }}>No Flow Log Selected. Attach a Log.</Text>
                 </View>}
                 <View style={[styles.button, { backgroundColor: Platform.OS == 'ios' ? "#4b88f2" : '' }]}>
                     <Button
@@ -249,9 +315,9 @@ const NewLogScreen = (props) => {
             <Text style={styles.label}>Import Snore Log</Text>
             <View style={styles.logSelector}>
                 {selectedSnoreLog ? <View style={styles.text} >
-                    <Text style={{ color: 'green', fontSize: 15 }}>Snore Log Selected!</Text>
+                    <Text style={{ color: 'green', fontSize: 14 }}>Snore Log Selected!</Text>
                 </View> : <View style={styles.text} >
-                    <Text style={{ color: 'red', fontSize: 15 }}>No Snore Log Selected. Attach a Log.</Text>
+                    <Text style={{ color: 'red', fontSize: 14 }}>No Snore Log Selected. Attach a Log.</Text>
                 </View>}
                 <View style={[styles.button, { backgroundColor: Platform.OS == 'ios' ? "#4b88f2" : '' }]}>
                     <Button
@@ -291,7 +357,7 @@ const styles = StyleSheet.create({
     },
     label: {
         fontSize: 17,
-        marginBottom: 15
+        marginBottom: 10
     },
     textInput: {
         // margin: 5,
@@ -301,16 +367,16 @@ const styles = StyleSheet.create({
     },
     button: {
         borderRadius: 25,
-        padding: 3,
-        marginTop: 10,
+        // padding: 3,
+        // marginTop: 10,
         // marginHorizontal: 80,
         // alignItems: 'center',
-        paddingHorizontal: 70
+        paddingHorizontal: Platform.OS == "android" ? 70 : 0
     },
     saveButton: {
         borderRadius: 25,
         padding: 3,
-        marginTop: 20
+        marginTop: 20,
     }
 });
 
