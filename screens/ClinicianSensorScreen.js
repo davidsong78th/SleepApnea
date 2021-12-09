@@ -32,7 +32,7 @@ const ClinicianSensorScreen = (props) => {
     const userECGLog = props.navigation.getParam('userECGLog')
     const userEEGLog = props.navigation.getParam('userEEGLog')
     const userOxymeterLog = props.navigation.getParam('userOxymeterLog')
-    const userPressureLog = props.navigation.getParam('userPressureLog')
+    const userStrainLog = props.navigation.getParam('userStrainLog')
     const userFlowLog = props.navigation.getParam('userFlowLog')
     const userSnoreLog = props.navigation.getParam('userSnoreLog')
     const dateCreated = props.navigation.getParam('dateCreated')
@@ -102,7 +102,7 @@ const ClinicianSensorScreen = (props) => {
                     title="Sp02 Event"
                     name="head-side-mask"
                     onSelect={() => {
-                        props.navigation.navigate('UserSensorSp02Detail', {
+                        props.navigation.navigate('ClinicianSensorSp02Detail', {
                             userDocument: userOxymeterLog,     //use Oxymeter to caluclate AHI
                             sensorTitle: "Sp02",
                             dateCreated: dateCreated,
@@ -113,12 +113,12 @@ const ClinicianSensorScreen = (props) => {
                     }}
                 />
                 <SensorItem
-                    title={sensors[3]}
+                    title="Respiratory Movement (Strain)"
                     name="prescription-bottle-alt"
                     onSelect={() => {
-                        props.navigation.navigate('ClinicianSensorDetail1SampleSec', {
-                            userDocument: userPressureLog,     //change this for each specific sensor file
-                            sensorTitle: sensors[3],
+                        props.navigation.navigate('ClinicianSensorDetail100SampleSec', {
+                            userDocument: userStrainLog,     //change this for each specific sensor file
+                            sensorTitle: "Respiratory Movement",
                             dateCreated: dateCreated,
                             selectedHour: selectedHour,
                             selectedMinute: selectedMinute,
@@ -127,12 +127,12 @@ const ClinicianSensorScreen = (props) => {
                     }}
                 />
                 <SensorItem
-                    title={sensors[0]}
+                    title="ECG"
                     name="heart"
                     onSelect={() => {
-                        props.navigation.navigate('ClinicianSensorDetail500SampleSec', {
+                        props.navigation.navigate('ClinicianSensorDetail400SampleSec', {
                             userDocument: userECGLog,     //change this for each specific sensor file
-                            sensorTitle: sensors[0],
+                            sensorTitle: "ECG",
                             dateCreated: dateCreated,
                             selectedHour: selectedHour,
                             selectedMinute: selectedMinute,
@@ -141,12 +141,12 @@ const ClinicianSensorScreen = (props) => {
                     }}
                 />
                 <SensorItem
-                    title={sensors[1]}
+                    title="EEG"
                     name="heartbeat"
                     onSelect={() => {
-                        props.navigation.navigate('ClinicianSensorDetail500SampleSec', {
+                        props.navigation.navigate('ClinicianSensorDetail400SampleSec', {
                             userDocument: userEEGLog,  //change this for each specific sensor file
-                            sensorTitle: sensors[1],
+                            sensorTitle: "EEG",
                             dateCreated: dateCreated,
                             selectedHour: selectedHour,
                             selectedMinute: selectedMinute,
@@ -155,12 +155,12 @@ const ClinicianSensorScreen = (props) => {
                     }}
                 />
                 <SensorItem
-                    title={sensors[2]}
+                    title="Oxymeter"
                     name="head-side-cough"
                     onSelect={() => {
-                        props.navigation.navigate('ClinicianSensorDetail1SampleSec', {
+                        props.navigation.navigate('ClinicianSensorDetail10SampleSec', {
                             userDocument: userOxymeterLog, //change this for each specific sensor file
-                            sensorTitle: sensors[2],
+                            sensorTitle: "Oxymeter",
                             dateCreated: dateCreated,
                             selectedHour: selectedHour,
                             selectedMinute: selectedMinute,
@@ -169,12 +169,12 @@ const ClinicianSensorScreen = (props) => {
                     }}
                 />
                 <SensorItem
-                    title={sensors[4]}
+                    title="AirFlow"
                     name="medrt"
                     onSelect={() => {
-                        props.navigation.navigate('ClinicianSensorDetail1SampleSec', {
+                        props.navigation.navigate('ClinicianSensorDetail25SampleSec', {
                             userDocument: userFlowLog,     //change this for each specific sensor file
-                            sensorTitle: sensors[4],
+                            sensorTitle: "AirFlow",
                             dateCreated: dateCreated,
                             selectedHour: selectedHour,
                             selectedMinute: selectedMinute,
@@ -183,12 +183,12 @@ const ClinicianSensorScreen = (props) => {
                     }}
                 />
                 <SensorItem
-                    title={sensors[5]}
+                    title="Snore"
                     name="bed"
                     onSelect={() => {
                         props.navigation.navigate('ClinicianSensorDetail100SampleSec', {
                             userDocument: userSnoreLog,     //change this for each specific sensor file
-                            sensorTitle: sensors[5],
+                            sensorTitle: "Snore",
                             dateCreated: dateCreated,
                             selectedHour: selectedHour,
                             selectedMinute: selectedMinute,

@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, StyleSheet, Dimensions, ActivityIndicator, Alert, SafeAreaView, FlatList, ScrollView, SectionList } from 'react-native';
 import * as FileSystem from 'expo-file-system';
-import Colors from '../constants/Colors';
+import Colors from '../../constants/Colors';
 import { FontAwesome5 } from '@expo/vector-icons'
 import DropDownPicker from 'react-native-dropdown-picker';
 import { Item as ItemButton } from 'react-navigation-header-buttons';
@@ -18,7 +18,6 @@ const UserSensorPressureDetailScreen = (props) => {
     }
     const sensorTitle = props.navigation.getParam('sensorTitle')
     const dateCreated = props.navigation.getParam('dateCreated')
-    // console.log(sensorTitle)
 
     const oneSecondSamplePoint = 1
     const oneMinuteSamplePoint = 60

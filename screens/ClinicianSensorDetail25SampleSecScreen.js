@@ -10,7 +10,7 @@ import DropDownPicker from 'react-native-dropdown-picker';
 
 
 // create a component
-const ClinicianSensorDetail100SampleScreen = (props) => {
+const ClinicianSensorDetailScreen = (props) => {
     //Get data passed from parent
     const documentPath = props.navigation.getParam('userDocument')
     if (!documentPath) {
@@ -19,15 +19,25 @@ const ClinicianSensorDetail100SampleScreen = (props) => {
         return false
     }
     const sensorTitle = props.navigation.getParam('sensorTitle')
+    var axisLabel = ""
+    if (sensorTitle == "Oxymeter") {
+        axisLabel = "Percentage %"
+    }
+    if (sensorTitle == "Respiratory Movement") {
+        axisLabel = "Voltage (V)"
+    }
+    else {
+        axisLabel = "kPa"
+    }
     const dateCreated = props.navigation.getParam('dateCreated')
 
     const selectedHour = props.navigation.getParam('selectedHour')
     const selectedMinute = props.navigation.getParam('selectedMinute')
     const selectedSeconds = props.navigation.getParam('selectedSeconds')
 
-    const oneSecondSamplePoint = 100
-    const oneMinuteSamplePoint = 6000
-    const oneHourSamplePoint = 360000
+    const oneSecondSamplePoint = 25
+    const oneMinuteSamplePoint = 1500
+    const oneHourSamplePoint = 90000
 
     //Setup data and read inputs
     const [fileData, setFileData] = useState([])
@@ -38,22 +48,18 @@ const ClinicianSensorDetail100SampleScreen = (props) => {
     const [open, setOpen] = useState(false);
     const [value, setValue] = useState(100);
     const [items, setItems] = useState([
-        { label: 'Low', value: 100 },
-        { label: 'Medium', value: 500 },
-        { label: 'High', value: 1000 }
+        // { label: '25', value: 25 },
+        // { label: '50', value: 50 },
+        { label: '100', value: 100 }
     ]);
-    // // console.log(value)
 
     const readFile = async () => {
         const fileString = await FileSystem.readAsStringAsync(documentPath)
         const dataObj = JSON.parse(fileString)
-
         var data = dataObj.data
         data = data.map((item, index) => {
-            item.x = item.x / 100
-            item.y = (item.y * 3.3) / 4096
             var obj = {}
-            obj["x"] = item.x
+            obj["x"] = item.x / 25
             obj["y"] = item.y
             return obj;
         })
@@ -125,7 +131,7 @@ const ClinicianSensorDetail100SampleScreen = (props) => {
     }
     const sampledPoints = value //from dropdown menu
     const sampledData = getData(fileData, sampledPoints)
-    // console.log(sampledData)
+    console.log(sampledData)
 
     //Show Data points handler
     const [showDataPoints, setShowDataPoints] = useState(false)
@@ -145,7 +151,7 @@ const ClinicianSensorDetail100SampleScreen = (props) => {
                     <Text style={styles.text}>{sensorTitle} Chart</Text>
                     <Text>Date Imported: {dateCreated} </Text>
                     <View style={styles.points}>
-                        <Text>{sensorTitle == "Snore" || "Respiratory Movement" ? "Resolution" : "Sample Points"}</Text>
+                        <Text>Resolution</Text>
                         <DropDownPicker
                             open={open}
                             value={value}
@@ -175,9 +181,8 @@ const ClinicianSensorDetail100SampleScreen = (props) => {
                         }
                     >
                         <VictoryAxis
-                            label="Voltage (V)"
+                            label={axisLabel}
                             dependentAxis
-                            style={{ axisLabel: { paddingLeft: 30 } }}
                         />
                         <VictoryLine
                             style={{
@@ -208,7 +213,7 @@ const ClinicianSensorDetail100SampleScreen = (props) => {
     )
 };
 
-ClinicianSensorDetail100SampleScreen.navigationOptions = navData => {
+ClinicianSensorDetailScreen.navigationOptions = navData => {
     const sensorTitle = navData.navigation.getParam('sensorTitle')
     const dataPointsHandler = navData.navigation.getParam('dataPointsHandler')
     return {
@@ -233,7 +238,7 @@ const styles = StyleSheet.create({
     screen: {
         padding: 10,
         justifyContent: 'center',
-        alignItems: 'center',
+        alignItems: 'center'
     },
     points: {
         paddingTop: 20,
@@ -255,4 +260,4 @@ const styles = StyleSheet.create({
 });
 
 //make this component available to the app
-export default ClinicianSensorDetail100SampleScreen;
+export default ClinicianSensorDetailScreen;

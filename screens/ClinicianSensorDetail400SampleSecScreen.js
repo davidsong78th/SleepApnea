@@ -10,7 +10,7 @@ import DropDownPicker from 'react-native-dropdown-picker';
 
 
 // create a component
-const ClinicianSensorDetail500SamplesSecScreen = (props) => {
+const ClinicianSensorDetail400SamplesSecScreen = (props) => {
     //Get data passed from parent
     const documentPath = props.navigation.getParam('userDocument')
     if (!documentPath) {
@@ -25,9 +25,12 @@ const ClinicianSensorDetail500SamplesSecScreen = (props) => {
     const selectedMinute = props.navigation.getParam('selectedMinute')
     const selectedSeconds = props.navigation.getParam('selectedSeconds')
 
-    const oneSecondSamplePoint = 500
-    const oneMinuteSamplePoint = 30000
-    const oneHourSamplePoint = 1800000
+    // const oneSecondSamplePoint = 500
+    // const oneMinuteSamplePoint = 30000
+    // const oneHourSamplePoint = 1800000
+    const oneSecondSamplePoint = 400
+    const oneMinuteSamplePoint = 24000
+    const oneHourSamplePoint = 1440000
 
     //Setup data and read inputs
     const [fileData, setFileData] = useState([])
@@ -39,8 +42,8 @@ const ClinicianSensorDetail500SamplesSecScreen = (props) => {
     const [value, setValue] = useState(1000);
     const [items, setItems] = useState([
         { label: 'Low', value: 1000 },
-        { label: 'Medium', value: 2500 },
-        { label: 'High', value: 5000 }
+        { label: 'Medium', value: 2000 },
+        { label: 'High', value: 4000 }
     ]);
 
     const readFile = async () => {
@@ -49,7 +52,8 @@ const ClinicianSensorDetail500SamplesSecScreen = (props) => {
 
         var data = dataObj.data
         data = data.map((item, index) => {
-            item.x = (item.x) / 500
+            // item.x = (item.x) / 500
+            item.x = (item.x) / 400
             var obj = {}
             obj["x"] = item.x
             obj["y"] = item.y
@@ -205,7 +209,7 @@ const ClinicianSensorDetail500SamplesSecScreen = (props) => {
     )
 };
 
-ClinicianSensorDetail500SamplesSecScreen.navigationOptions = navData => {
+ClinicianSensorDetail400SamplesSecScreen.navigationOptions = navData => {
     const sensorTitle = navData.navigation.getParam('sensorTitle')
     const dataPointsHandler = navData.navigation.getParam('dataPointsHandler')
     return {
@@ -252,4 +256,4 @@ const styles = StyleSheet.create({
 });
 
 //make this component available to the app
-export default ClinicianSensorDetail500SamplesSecScreen;
+export default ClinicianSensorDetail400SamplesSecScreen;

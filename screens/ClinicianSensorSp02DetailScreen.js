@@ -6,7 +6,7 @@ import Colors from '../constants/Colors';
 import DropDownPicker from 'react-native-dropdown-picker';
 
 // create a component
-const UserSensorSp02DetailScreen = (props) => {
+const ClinicianSensorSp02DetailScreen = (props) => {
     //Get data passed from parent (Oxymeter Log)
     const documentPath = props.navigation.getParam('userDocument')
     if (!documentPath) {
@@ -16,18 +16,12 @@ const UserSensorSp02DetailScreen = (props) => {
     }
     const sensorTitle = props.navigation.getParam('sensorTitle')
     const dateCreated = props.navigation.getParam('dateCreated')
-    // console.log(sensorTitle)
 
     const oneSecondSamplePoint = 1
     const oneMinuteSamplePoint = 60
     const oneHourSamplePoint = 3600
 
-    // const selectedHour = props.navigation.getParam('selectedHour')
-    // const selectedMinute = props.navigation.getParam('selectedMinute')
-    // const selectedSeconds = props.navigation.getParam('selectedSeconds')
-
     //Setup data and read inputs
-    // const [filteredData, setFilteredData] = useState([])
     const [showContent, setShowContent] = useState(false)
 
     const [min, setMin] = useState()
@@ -52,6 +46,8 @@ const UserSensorSp02DetailScreen = (props) => {
         { label: '95', value: 95 },
         { label: '96', value: 96 },
         { label: '97', value: 97 },
+        { label: '98', value: 98 },
+        { label: '99', value: 99 },
     ]);
 
     const readFile = async () => {
@@ -77,11 +73,9 @@ const UserSensorSp02DetailScreen = (props) => {
                 if (flag == 0) {                // check for first dip value
                     startIndex = data[x].x      //save start index
                     duration = duration + 1
-                    //sum = sum + data[x].y       //sum up the y values
                     flag = 1                    //set flag to 1
                 } else {
                     duration = duration + 1
-                    //sum = sum + data[x].y
                 }
             } else {
                 if (duration >= 10) {              //if duration >= 10 secs, flag it
@@ -92,11 +86,6 @@ const UserSensorSp02DetailScreen = (props) => {
             }
         }
         average = (sum) / data.length
-        // console.log(occurenceTime)
-        // console.log("Sum: " + sum)
-        // console.log("Hypopnea: " + totalDip)
-        // console.log("SpO2 average: " + average)
-        // console.log("Max: " + maxV + ", Min: " + minV)
 
         setEvent(Object.values(occurenceTime))
         setTimeStamp(Object.keys(occurenceTime))
@@ -135,10 +124,8 @@ const UserSensorSp02DetailScreen = (props) => {
         }
 
         const time = `${elaspedHour}:${elapsedMinute}:${elaspedSecond}`
-        // return Number(time)
         return time
     })
-    // console.log(realTimeStamp)      //Convert timeStamp from string array of objects to int
 
     return (
         <SafeAreaView>
@@ -158,15 +145,13 @@ const UserSensorSp02DetailScreen = (props) => {
                                 setItems={setItems}
                                 style={{
                                     backgroundColor: "#e6cfff",
-                                    // height: 100
-                                    // zIndex: -1
                                 }}
                             />
                             <Text style={{ fontSize: 11 }}>*Note: Data based off of Oxymeter</Text>
                         </View>
                         <View style={{ justifyContent: 'space-evenly' }}>
-                            <Text style={styles.text2}>                    Max: {max}           Min: {min}</Text>
-                            <Text style={styles.text2}>Sp02 Desaturation: {desaturation}     Average/Hr: {Sp02}</Text>
+                            <Text style={styles.text2}>                    Max: {max.toFixed(2)}           Min: {min.toFixed(2)}</Text>
+                            <Text style={styles.text2}>Sp02 Desaturation: {desaturation.toFixed(2)}     Average/Hr: {Sp02.toFixed(2)}</Text>
                         </View>
                     </View>
                     <ScrollView contentContainerStyle={styles.container}>
@@ -178,9 +163,7 @@ const UserSensorSp02DetailScreen = (props) => {
                                 keyExtractor={(item, index) => index.toString()}
                                 renderItem={itemData => {
                                     return (
-                                        // <View>
                                         <Text>{itemData.item}</Text>
-                                        // </View>
                                     )
                                 }
                                 }
@@ -195,9 +178,7 @@ const UserSensorSp02DetailScreen = (props) => {
                                 keyExtractor={(item, index) => index.toString()}
                                 renderItem={itemData => {
                                     return (
-                                        // <View>
                                         <Text>{itemData.item}</Text>
-                                        // </View>
                                     )
                                 }}
                             />
@@ -212,7 +193,7 @@ const UserSensorSp02DetailScreen = (props) => {
     )
 };
 
-UserSensorSp02DetailScreen.navigationOptions = navData => {
+ClinicianSensorSp02DetailScreen.navigationOptions = navData => {
     const sensorTitle = navData.navigation.getParam('sensorTitle')
     return {
         headerTitle: sensorTitle,
@@ -223,7 +204,6 @@ UserSensorSp02DetailScreen.navigationOptions = navData => {
 const styles = StyleSheet.create({
     screen: {
         // flex: 1,
-        // height: 300,
         padding: 10,
         justifyContent: 'center',
         alignItems: 'center'
@@ -239,7 +219,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         flexWrap: 'wrap',
         alignItems: 'flex-start', // if you want to fill rows left to right
-        // padding: 10,
         marginVertical: 10,
         paddingBottom: 500
     },
@@ -250,8 +229,6 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         alignItems: 'center',
         justifyContent: 'center',
-        // height: 40
-        // zIndex: 1
     },
     item: {
         flex: 1,
@@ -272,4 +249,4 @@ const styles = StyleSheet.create({
 });
 
 //make this component available to the app
-export default UserSensorSp02DetailScreen;
+export default ClinicianSensorSp02DetailScreen;

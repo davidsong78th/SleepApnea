@@ -6,30 +6,29 @@ import { createDrawerNavigator } from 'react-navigation-drawer';
 import { Ionicons } from '@expo/vector-icons';
 
 import ListScreen from '../screens/ListScreen'
-import UserSensorDetailScreen from '../screens/UserSensorDetailScreen'
 import NewLogScreen from '../screens/NewLogScreen'
 import Colors from "../constants/Colors";
 import HelpScreen from "../screens/HelpScreen";
 import AboutScreen from "../screens/AboutScreen";
 import UserSensorScreen from '../screens/UserSensorScreen';
 import ClinicianSensorScreen from '../screens/ClinicianSensorScreen'
-import ClinicianSensorDetail500SampleSecScreen from '../screens/ClinicianSensorDetail500SampleSecScreen';
-import ClinicianSensorDetail1SampleSecScreen from '../screens/ClinicianSensorDetail1SampleSecScreen';
+import ClinicianSensorDetail400SampleSecScreen from '../screens/ClinicianSensorDetail400SampleSecScreen';
+import ClinicianSensorDetail10SampleSecScreen from '../screens/ClinicianSensorDetail10SampleSecScreen';
 import ClinicianSensorDetail100SampleSecScreen from '../screens/ClinicianSensorDetail100SampleSecScreen';
+import ClinicianSensorDetail25SampleSecScreen from '../screens/ClinicianSensorDetail25SampleSecScreen';
 import ClinicianSensorSp02DetailScreen from '../screens/ClinicianSensorSp02DetailScreen'
-import ClinicianSensorPressureDetailScreen from '../screens/ClinicianSensorPressureDetailScreen'
 
 const UsersNavigator = createStackNavigator({
     Users: ListScreen,
-    UserSensorDetail: UserSensorDetailScreen,
     NewLog: NewLogScreen,
     UserSensor: UserSensorScreen,
     ClinicianSensor: ClinicianSensorScreen,
-    ClinicianSensorDetail500SampleSec: ClinicianSensorDetail500SampleSecScreen,
-    ClinicianSensorDetail1SampleSec: ClinicianSensorDetail1SampleSecScreen,
+    ClinicianSensorDetail400SampleSec: ClinicianSensorDetail400SampleSecScreen,
+    ClinicianSensorDetail10SampleSec: ClinicianSensorDetail10SampleSecScreen,
     ClinicianSensorDetail100SampleSec: ClinicianSensorDetail100SampleSecScreen,
-    ClinicianSensorPressureDetail: ClinicianSensorSp02DetailScreen,
-    ClinicianSensorPressureDetail: ClinicianSensorPressureDetailScreen,
+    ClinicianSensorDetail25SampleSec: ClinicianSensorDetail25SampleSecScreen,
+    ClinicianSensorSp02Detail: ClinicianSensorSp02DetailScreen,
+
 }, {
     defaultNavigationOptions: {
         headerStyle: {

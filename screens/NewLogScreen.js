@@ -17,7 +17,7 @@ const NewLogScreen = (props) => {
     const [selectedECGLog, setSelectedECGLog] = useState()
     const [selectedEEGLog, setSelectedEEGLog] = useState()
     const [selectedOxymeterLog, setSelectedOxymeterLog] = useState()
-    const [selectedPressureLog, setSelectedPressureLog] = useState()
+    const [selectedStrainLog, setSelectedStrainLog] = useState()
     const [selectedFlowLog, setSelectedFlowLog] = useState()
     const [selectedSnoreLog, setSelectedSnoreLog] = useState()
 
@@ -36,8 +36,8 @@ const NewLogScreen = (props) => {
     }
 
     const saveUserHandler = () => {
-        if ((selectedOxymeterLog && selectedPressureLog) || (selectedECGLog || selectedEEGLog || selectedPressureLog || selectedFlowLog || selectedSnoreLog)) {
-            dispatch(usersActions.addUser(titleValue, selectedECGLog, selectedEEGLog, selectedOxymeterLog, selectedPressureLog, selectedFlowLog, selectedSnoreLog, dateCreated))
+        if ((selectedOxymeterLog && setSelectedFlowLog) || (selectedECGLog || selectedEEGLog || selectedStrainLog || selectedSnoreLog)) {
+            dispatch(usersActions.addUser(titleValue, selectedECGLog, selectedEEGLog, selectedOxymeterLog, selectedStrainLog, selectedFlowLog, selectedSnoreLog, dateCreated))
             props.navigation.goBack()
         } else {
             Alert.alert('Data Log Attachment Needed', 'Add Oxymeter and Pressure at Minimum', [{ text: 'Okay' }])
@@ -137,7 +137,7 @@ const NewLogScreen = (props) => {
         }
     }
 
-    const pickPressureLogHandler = async () => {
+    const pickStrainLogHandler = async () => {
         if (Platform.OS === 'android') {
             const result = await DocumentPicker.getDocumentAsync({ type: "*/*", copyToCacheDirectory: false, });
             if (result.type === 'success') {
@@ -147,7 +147,7 @@ const NewLogScreen = (props) => {
                     from: result.uri,
                     to: newDocumentPath
                 })
-                setSelectedPressureLog(newDocumentPath)
+                setSelectedStrainLog(newDocumentPath)
             } else {
                 return
             }
@@ -160,7 +160,7 @@ const NewLogScreen = (props) => {
                     from: result.uri,
                     to: newDocumentPath
                 })
-                setSelectedPressureLog(newDocumentPath)
+                setSelectedStrainLog(newDocumentPath)
             } else {
                 return
             }
@@ -246,23 +246,23 @@ const NewLogScreen = (props) => {
                 </View>}
                 <View style={[styles.button, { backgroundColor: Platform.OS == 'ios' ? "#4b88f2" : '' }]}>
                     <Button
-                        title="Select Oxymeter Log"
+                        title="Select Oxymeter Log (Sp02)"
                         onPress={pickOxymeterLogHandler}
                         color={Platform.OS == 'ios' ? "white" : ''}
                     />
                 </View>
             </View>
-            <Text style={styles.label}>Import Pressure Log</Text>
+            <Text style={styles.label}>Import Respiratory Log</Text>
             <View style={styles.logSelector}>
-                {selectedPressureLog ? <View style={styles.text} >
-                    <Text style={{ color: 'green', fontSize: 14 }}>Pressure Log Selected!</Text>
+                {selectedStrainLog ? <View style={styles.text} >
+                    <Text style={{ color: 'green', fontSize: 14 }}>Respiratory Log Selected!</Text>
                 </View> : <View style={styles.text} >
-                    <Text style={{ color: 'red', fontSize: 14 }}>No Pressure Log Selected. Attach a Log.</Text>
+                    <Text style={{ color: 'red', fontSize: 14 }}>No Respiratory Log Selected. Attach a Log.</Text>
                 </View>}
                 <View style={[styles.button, { backgroundColor: Platform.OS == 'ios' ? "#4b88f2" : '' }]}>
                     <Button
-                        title="Select Pressure Log"
-                        onPress={pickPressureLogHandler}
+                        title="Select Respiratory Log"
+                        onPress={pickStrainLogHandler}
                         color={Platform.OS == 'ios' ? "white" : ''}
                     />
                 </View>

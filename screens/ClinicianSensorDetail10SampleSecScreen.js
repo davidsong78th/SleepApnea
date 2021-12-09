@@ -35,9 +35,9 @@ const ClinicianSensorDetailScreen = (props) => {
     const selectedMinute = props.navigation.getParam('selectedMinute')
     const selectedSeconds = props.navigation.getParam('selectedSeconds')
 
-    const oneSecondSamplePoint = 1
-    const oneMinuteSamplePoint = 60
-    const oneHourSamplePoint = 3600
+    const oneSecondSamplePoint = 10
+    const oneMinuteSamplePoint = 600
+    const oneHourSamplePoint = 36000
 
     //Setup data and read inputs
     const [fileData, setFileData] = useState([])
@@ -46,13 +46,12 @@ const ClinicianSensorDetailScreen = (props) => {
 
     // //Dropdown menu
     const [open, setOpen] = useState(false);
-    const [value, setValue] = useState(10);
+    const [value, setValue] = useState(100);
     const [items, setItems] = useState([
-        { label: '10', value: 10 },
-        { label: '50', value: 50 },
-        { label: '100', value: 100 }
+        { label: '100', value: 100 },
+        // { label: '500', value: 500 },
+        // { label: '1000', value: 1000 }
     ]);
-    // // console.log(value)
 
     const readFile = async () => {
         const fileString = await FileSystem.readAsStringAsync(documentPath)
@@ -63,7 +62,6 @@ const ClinicianSensorDetailScreen = (props) => {
 
         //Show total elasped time from the file
         const totalTime = data.length
-        // console.log(totalTime)
         const elaspedHour = parseInt(totalTime / oneHourSamplePoint)
         const modHour = totalTime % oneHourSamplePoint
         const elapsedMinute = parseInt(modHour / oneMinuteSamplePoint)

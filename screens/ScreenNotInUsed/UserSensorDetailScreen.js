@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, Dimensions, ActivityIndicator } from 'react-native';
 import * as FileSystem from 'expo-file-system';
 import { LineChart, ProgressChart, BarChart } from "react-native-chart-kit";
-import Colors from '../constants/Colors';
+import Colors from '../../constants/Colors';
 
 // create a component
 const UserSensorDetailScreen = (props) => {
@@ -18,7 +18,6 @@ const UserSensorDetailScreen = (props) => {
         setIsLoading(true)
         const fileString = await FileSystem.readAsStringAsync(documentPath)
         const dataObj = JSON.parse(fileString)
-        // console.log(dataObj)
 
         const yValues = dataObj.data.map(d => d.y)
         const xValues = dataObj.data.map(d => d.x)

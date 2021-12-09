@@ -20,7 +20,7 @@ const UserSensorScreen = (props) => {
     const userECGLog = props.navigation.getParam('userECGLog')
     const userEEGLog = props.navigation.getParam('userEEGLog')
     const userOxymeterLog = props.navigation.getParam('userOxymeterLog')
-    const userPressureLog = props.navigation.getParam('userPressureLog')
+    const userStrainLog = props.navigation.getParam('userStrainLog')
     const userFlowLog = props.navigation.getParam('userFlowLog')
     const userSnoreLog = props.navigation.getParam('userSnoreLog')
 
@@ -77,7 +77,9 @@ const UserSensorScreen = (props) => {
         { label: '94', value: 94 },
         { label: '95', value: 95 },
         { label: '96', value: 96 },
-        { label: '97', value: 97 }
+        { label: '97', value: 97 },
+        { label: '98', value: 98 },
+        { label: '99', value: 99 }
     ]);
 
     const readOxymeterLogFile = async () => {
@@ -88,7 +90,7 @@ const UserSensorScreen = (props) => {
 
         //Find dip value for at least 10 seconds consecutively
         const limit = value                      //dip value limit
-        var flag = 0, sum = 0, totalDip = 0, startIndex = 0, duration = 0, average = 0
+        var flag = 0, sum = 0, totalDip = 0, startIndex = 0, duration = 0, average = 0, limitFlag = 0
         var maxV = data[0].y, minV = data[0].y  //pick the first value as the min and max
         var occurenceTime = {}
         for (let x = 0; x < data.length; x++) {
@@ -127,12 +129,12 @@ const UserSensorScreen = (props) => {
         setTimeLength(data.length)
     }
 
-    const [avgPressure, setAvgPressure] = useState()
-    const [minPressure, setMinPressure] = useState()
-    const [maxPressure, setMaxPressure] = useState()
+    const [avgAirFlow, setAvgAirFlow] = useState()
+    const [minAirFlow, setMinAirFlow] = useState()
+    const [maxAirFlow, setMaxAirFlow] = useState()
 
-    const readPressureLogFile = async () => {
-        const fileString = await FileSystem.readAsStringAsync(userPressureLog)
+    const readFlowLogFile = async () => {
+        const fileString = await FileSystem.readAsStringAsync(userFlowLog)
         const dataObj = JSON.parse(fileString)
 
         const data = dataObj.data
@@ -140,18 +142,23 @@ const UserSensorScreen = (props) => {
         var sum = 0, average = 0
         var maxV = data[0].y, minV = data[0].y  //pick the first value as the min and max
         for (let x = 0; x < data.length; x++) {
-            if (data[x].y < minV) {              //Find Min value
-                minV = data[x].y
+            if (parseFloat(data[x].y) <= minV) {              //Find Min value
+                minV = parseFloat(data[x].y)
             }
-            if (data[x].y > maxV) {              //Find Max value
-                maxV = data[x].y
+            if (parseFloat(data[x].y) >= maxV) {              //Find Max value
+                maxV = parseFloat(data[x].y)
             }
-            sum = sum + data[x].y               //Sum of all values
+            sum = sum + parseFloat(data[x].y)              //Sum of all values
         }
         average = (sum) / data.length
-        setAvgPressure(average)
-        setMinPressure(minV)
-        setMaxPressure(maxV)
+        // console.log("SUM: " + sum)
+        // console.log("max: " + maxV)
+        // console.log("min: " + minV)
+        // console.log("SUM: " + sum)
+        // console.log("Average: " + average)
+        setAvgAirFlow(average)
+        setMinAirFlow(minV)
+        setMaxAirFlow(maxV)
         setTimeLength(data.length)
     }
 
@@ -160,8 +167,8 @@ const UserSensorScreen = (props) => {
     }, [userOxymeterLog, value])
 
     useEffect(() => {
-        readPressureLogFile()
-    }, [userPressureLog])
+        readFlowLogFile()
+    }, [userFlowLog])
 
     useEffect(() => {
         setTimeout(() => {
@@ -186,7 +193,6 @@ const UserSensorScreen = (props) => {
         }
 
         const time = `${elaspedHour}:${elapsedMinute}:${elaspedSecond}`
-        // return Number(time)
         return time
     })
 
@@ -196,10 +202,10 @@ const UserSensorScreen = (props) => {
                 <View>
                     <View>
                         <View style={styles.screen}>
-                            <Text style={styles.text}>Pressure Detail</Text>
+                            <Text style={styles.text}>AirFlow</Text>
                             <View style={{ justifyContent: 'space-evenly', marginTop: 20 }}>
-                                <Text style={styles.text2}>Max: {maxPressure} kPa          Min: {minPressure} kPa</Text>
-                                <Text style={styles.text2}>Average/Hr:     {avgPressure} kPa</Text>
+                                <Text style={styles.text2}>Max: {maxAirFlow.toFixed(2)} kPa          Min: {minAirFlow.toFixed(2)} kPa</Text>
+                                <Text style={styles.text2}>Average/Hr:     {avgAirFlow.toFixed(2)} kPa</Text>
                             </View>
                         </View>
                     </View>
@@ -222,8 +228,8 @@ const UserSensorScreen = (props) => {
                             <Text style={{ fontSize: 11 }}>*Note: Data based off of Oxymeter</Text>
                         </View>
                         <View style={{ justifyContent: 'space-evenly' }}>
-                            <Text style={styles.text2}>                    Max: {max}           Min: {min}</Text>
-                            <Text style={styles.text2}>Sp02 Desaturation: {desaturation}     Average/Hr: {Sp02}</Text>
+                            <Text style={styles.text2}>                    Max: {max.toFixed(2)}           Min: {min.toFixed(2)}</Text>
+                            <Text style={styles.text2}>Sp02 Desaturation: {desaturation}     Average/Hr: {Sp02.toFixed(2)}</Text>
                         </View>
                     </View>
                     <ScrollView contentContainerStyle={styles.container}>
@@ -269,7 +275,7 @@ UserSensorScreen.navigationOptions = navData => {
     const userECGLog = navData.navigation.getParam('userECGLog')
     const userEEGLog = navData.navigation.getParam('userEEGLog')
     const userOxymeterLog = navData.navigation.getParam('userOxymeterLog')
-    const userPressureLog = navData.navigation.getParam('userPressureLog')
+    const userStrainLog = navData.navigation.getParam('userStrainLog')
     const userFlowLog = navData.navigation.getParam('userFlowLog')
     const userSnoreLog = navData.navigation.getParam('userSnoreLog')
     const dateCreated = navData.navigation.getParam('dateCreated')
@@ -296,7 +302,7 @@ UserSensorScreen.navigationOptions = navData => {
                                 userECGLog: userECGLog,
                                 userEEGLog: userEEGLog,
                                 userOxymeterLog: userOxymeterLog,
-                                userPressureLog: userPressureLog,
+                                userStrainLog: userStrainLog,
                                 userFlowLog: userFlowLog,
                                 userSnoreLog: userSnoreLog,
                                 dateCreated: dateCreated,
@@ -315,7 +321,7 @@ const styles = StyleSheet.create({
     screen: {
         padding: 10,
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
     },
     activityIndicator: {
         flex: 1,
@@ -324,13 +330,11 @@ const styles = StyleSheet.create({
         marginTop: Dimensions.get("window").height / 2,
     },
     container: {
-        // flex: 1,
         flexDirection: 'row',
         flexWrap: 'wrap',
         alignItems: 'flex-start', // if you want to fill rows left to right
-        // padding: 10,
         marginVertical: 20,
-        paddingBottom: 500
+        paddingBottom: 500,
     },
     points: {
         // flex: 1,
@@ -339,8 +343,6 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         alignItems: 'center',
         justifyContent: 'center',
-        // height: 40
-        // zIndex: 1
     },
     item: {
         flex: 1,

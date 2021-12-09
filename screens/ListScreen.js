@@ -75,7 +75,7 @@ const ListScreen = (props) => {
                                         userECGLog: itemData.item.ECGLog,
                                         userEEGLog: itemData.item.EEGLog,
                                         userOxymeterLog: itemData.item.OxymeterLog,
-                                        userPressureLog: itemData.item.PressureLog,
+                                        userStrainLog: itemData.item.StrainLog,
                                         userFlowLog: itemData.item.FlowLog,
                                         userSnoreLog: itemData.item.SnoreLog,
                                         dateCreated: itemData.item.dateCreated,
