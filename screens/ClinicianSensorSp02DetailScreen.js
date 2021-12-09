@@ -1,64 +1,32 @@
 //import libraries
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, StyleSheet, Platform, ScrollView, Alert, Dimensions, ActivityIndicator, SafeAreaView, FlatList } from 'react-native';
-import { HeaderButtons, Item as ItemButton } from 'react-navigation-header-buttons';
-import HeaderButton from '../components/HeaderButton'
-import SensorItem from '../components/SensorItem';
-import { FontAwesome5 } from '@expo/vector-icons'
-import Colors from '../constants/Colors';
-import * as userActions from '../store/users-action'
-import { useDispatch } from 'react-redux'
-import DropDownPicker from 'react-native-dropdown-picker';
+import { View, Text, StyleSheet, Dimensions, ActivityIndicator, Alert, SafeAreaView, FlatList, ScrollView } from 'react-native';
 import * as FileSystem from 'expo-file-system';
-import { LogBox } from 'react-native';
-LogBox.ignoreLogs(['VirtualizedLists should never be nested inside plain ScrollViews with the same orientation - use another VirtualizedList-backed container instead.']);
-
+import Colors from '../constants/Colors';
+import DropDownPicker from 'react-native-dropdown-picker';
 
 // create a component
-const UserSensorScreen = (props) => {
-    //Get props passed from ListScreen
-    const userECGLog = props.navigation.getParam('userECGLog')
-    const userEEGLog = props.navigation.getParam('userEEGLog')
-    const userOxymeterLog = props.navigation.getParam('userOxymeterLog')
-    const userStrainLog = props.navigation.getParam('userStrainLog')
-    const userFlowLog = props.navigation.getParam('userFlowLog')
-    const userSnoreLog = props.navigation.getParam('userSnoreLog')
-
+const ClinicianSensorSp02DetailScreen = (props) => {
+    //Get data passed from parent (Oxymeter Log)
+    const documentPath = props.navigation.getParam('userDocument')
+    if (!documentPath) {
+        Alert.alert("Data Not Imported", `Import the Data Properly`,
+            [{ text: 'Go Back', onPress: () => props.navigation.goBack() }])
+        return false
+    }
+    const sensorTitle = props.navigation.getParam('sensorTitle')
     const dateCreated = props.navigation.getParam('dateCreated')
-    const userId = props.navigation.getParam('userId')
-    const userTitle = props.navigation.getParam('userTitle')
-
-    const dispatch = useDispatch()
-
-    //For deleting log
-    const deleteItemHandler = useCallback(async (id, title) => {
-        Alert.alert(`Delete ${title} Log?`, 'There is no way of recovering it.', [
-            {
-                text: 'Yes', style: 'destructive', onPress: () => {
-                    dispatch(userActions.deleteUsers(id))
-                    props.navigation.goBack()
-                }
-            },
-            { text: 'No', style: 'default' }
-        ])
-    }, [dispatch])
-
-    useEffect(() => {
-        props.navigation.setParams({ 'deleteItemHandler': () => deleteItemHandler(userId, userTitle) })
-    }, [deleteItemHandler])
-
-    // const sensorTitle = props.navigation.getParam('sensorTitle')
 
     const oneSecondSamplePoint = 1
     const oneMinuteSamplePoint = 60
     const oneHourSamplePoint = 3600
 
+    //Setup data and read inputs
     const [showContent, setShowContent] = useState(false)
 
-    //Sp02 contents
     const [min, setMin] = useState()
     const [max, setMax] = useState()
-    const [desaturation, setDesaturation] = useState()
+    const [desaturation, setHypopnea] = useState()
     const [Sp02, setSp02] = useState()
     const [timeLength, setTimeLength] = useState()
     const [event, setEvent] = useState([])
@@ -79,18 +47,18 @@ const UserSensorScreen = (props) => {
         { label: '96', value: 96 },
         { label: '97', value: 97 },
         { label: '98', value: 98 },
-        { label: '99', value: 99 }
+        { label: '99', value: 99 },
     ]);
 
-    const readOxymeterLogFile = async () => {
-        const fileString = await FileSystem.readAsStringAsync(userOxymeterLog)
+    const readFile = async () => {
+        const fileString = await FileSystem.readAsStringAsync(documentPath)
         const dataObj = JSON.parse(fileString)
 
         const data = dataObj.data
 
         //Find dip value for at least 10 seconds consecutively
-        const limit = value                      //dip value limit
-        var flag = 0, sum = 0, totalDip = 0, startIndex = 0, duration = 0, average = 0, limitFlag = 0
+        const limit = value                        //dip value limit
+        var flag = 0, sum = 0, totalDip = 0, startIndex = 0, duration = 0, average = 0
         var maxV = data[0].y, minV = data[0].y  //pick the first value as the min and max
         var occurenceTime = {}
         for (let x = 0; x < data.length; x++) {
@@ -110,7 +78,7 @@ const UserSensorScreen = (props) => {
                     duration = duration + 1
                 }
             } else {
-                if (duration >= 10) {           //if duration >= 10 secs, flag it
+                if (duration >= 10) {              //if duration >= 10 secs, flag it
                     totalDip = totalDip + 1     //update totalAHI value
                     occurenceTime[startIndex] = duration
                 }
@@ -122,53 +90,16 @@ const UserSensorScreen = (props) => {
         setEvent(Object.values(occurenceTime))
         setTimeStamp(Object.keys(occurenceTime))
 
-        setDesaturation(totalDip)
+        setHypopnea(totalDip)
         setSp02(average)
         setMin(minV)
         setMax(maxV)
         setTimeLength(data.length)
     }
 
-    const [avgAirFlow, setAvgAirFlow] = useState()
-    const [minAirFlow, setMinAirFlow] = useState()
-    const [maxAirFlow, setMaxAirFlow] = useState()
-
-    const readFlowLogFile = async () => {
-        const fileString = await FileSystem.readAsStringAsync(userFlowLog)
-        const dataObj = JSON.parse(fileString)
-
-        const data = dataObj.data
-
-        var sum = 0, average = 0
-        var maxV = data[0].y, minV = data[0].y  //pick the first value as the min and max
-        for (let x = 0; x < data.length; x++) {
-            if (parseFloat(data[x].y) <= minV) {              //Find Min value
-                minV = parseFloat(data[x].y)
-            }
-            if (parseFloat(data[x].y) >= maxV) {              //Find Max value
-                maxV = parseFloat(data[x].y)
-            }
-            sum = sum + parseFloat(data[x].y)              //Sum of all values
-        }
-        average = (sum) / data.length
-        // console.log("SUM: " + sum)
-        // console.log("max: " + maxV)
-        // console.log("min: " + minV)
-        // console.log("SUM: " + sum)
-        // console.log("Average: " + average)
-        setAvgAirFlow(average)
-        setMinAirFlow(minV)
-        setMaxAirFlow(maxV)
-        setTimeLength(data.length)
-    }
-
     useEffect(() => {
-        readOxymeterLogFile()
-    }, [userOxymeterLog, value])
-
-    useEffect(() => {
-        readFlowLogFile()
-    }, [userFlowLog])
+        readFile()
+    }, [documentPath, value])
 
     useEffect(() => {
         setTimeout(() => {
@@ -200,17 +131,8 @@ const UserSensorScreen = (props) => {
         <SafeAreaView>
             {showContent ?
                 <View>
-                    <View>
-                        <View style={styles.screen}>
-                            <Text style={styles.text}>AirFlow</Text>
-                            <View style={{ justifyContent: 'space-evenly', marginTop: 20 }}>
-                                <Text style={styles.text2}>Max: {maxAirFlow.toFixed(2)} kPa          Min: {minAirFlow.toFixed(2)} kPa</Text>
-                                <Text style={styles.text2}>Average/Hr:     {avgAirFlow.toFixed(2)} kPa</Text>
-                            </View>
-                        </View>
-                    </View>
                     <View style={styles.screen}>
-                        <Text style={styles.text}>Sp02 Time & Event</Text>
+                        <Text style={styles.text}>{sensorTitle} Time & Event</Text>
                         <Text>Date Imported: {dateCreated} </Text>
                         <View style={styles.points}>
                             <Text>Limit</Text>
@@ -229,7 +151,7 @@ const UserSensorScreen = (props) => {
                         </View>
                         <View style={{ justifyContent: 'space-evenly' }}>
                             <Text style={styles.text2}>                    Max: {max.toFixed(2)}           Min: {min.toFixed(2)}</Text>
-                            <Text style={styles.text2}>Sp02 Desaturation: {desaturation}     Average/Hr: {Sp02.toFixed(2)}</Text>
+                            <Text style={styles.text2}>Sp02 Desaturation: {desaturation.toFixed(2)}     Average/Hr: {Sp02.toFixed(2)}</Text>
                         </View>
                     </View>
                     <ScrollView contentContainerStyle={styles.container}>
@@ -250,6 +172,7 @@ const UserSensorScreen = (props) => {
                         <View style={styles.item}>
                             <Text style={{ ...styles.text, fontSize: 17 }}>Occur Time (H:M:S)</Text>
                             <FlatList
+                                // data={[1, 2, 3, 4]}
                                 data={realTimeStamp}
                                 numColumns={1}
                                 keyExtractor={(item, index) => index.toString()}
@@ -267,61 +190,23 @@ const UserSensorScreen = (props) => {
                 </View>
             }
         </SafeAreaView >
-    );
+    )
 };
 
-UserSensorScreen.navigationOptions = navData => {
-    const deleteItemHandler = navData.navigation.getParam('deleteItemHandler')
-    const userECGLog = navData.navigation.getParam('userECGLog')
-    const userEEGLog = navData.navigation.getParam('userEEGLog')
-    const userOxymeterLog = navData.navigation.getParam('userOxymeterLog')
-    const userStrainLog = navData.navigation.getParam('userStrainLog')
-    const userFlowLog = navData.navigation.getParam('userFlowLog')
-    const userSnoreLog = navData.navigation.getParam('userSnoreLog')
-    const dateCreated = navData.navigation.getParam('dateCreated')
-
+ClinicianSensorSp02DetailScreen.navigationOptions = navData => {
+    const sensorTitle = navData.navigation.getParam('sensorTitle')
     return {
-        headerTitle: 'Sensors Log',
-        headerLeft: () => <HeaderButtons HeaderButtonComponent={HeaderButton}>
-            <ItemButton title='back' iconName='arrow-back' onPress={() => {
-                navData.navigation.goBack();
-            }} />
-        </HeaderButtons>,
-        headerRight: () =>
-            <View style={{ flexDirection: "row" }}>
-                <ItemButton title='delete' iconName={"trash-alt"} IconComponent={FontAwesome5} iconSize={23}
-                    color={Platform.OS === 'android' ? 'white' : Colors.primary}
-                    onPress={deleteItemHandler}
-                />
-                <ItemButton title='Clinician' iconName={"user-md"} IconComponent={FontAwesome5} iconSize={23}
-                    color={Platform.OS === 'android' ? 'white' : Colors.primary}
-                    onPress={() => {
-                        Alert.alert("Disclaimer...", "This is for Clinician ONLY", [{
-                            text: 'Proceed',
-                            onPress: () => navData.navigation.navigate('ClinicianSensor', {
-                                userECGLog: userECGLog,
-                                userEEGLog: userEEGLog,
-                                userOxymeterLog: userOxymeterLog,
-                                userStrainLog: userStrainLog,
-                                userFlowLog: userFlowLog,
-                                userSnoreLog: userSnoreLog,
-                                dateCreated: dateCreated,
-                            })
-                        }, { text: 'Back' }])
-
-                    }}
-                />
-
-            </View>
+        headerTitle: sensorTitle,
     }
 }
 
 // define your styles
 const styles = StyleSheet.create({
     screen: {
+        // flex: 1,
         padding: 10,
         justifyContent: 'center',
-        alignItems: 'center',
+        alignItems: 'center'
     },
     activityIndicator: {
         flex: 1,
@@ -330,11 +215,12 @@ const styles = StyleSheet.create({
         marginTop: Dimensions.get("window").height / 2,
     },
     container: {
+        // flex: 1,
         flexDirection: 'row',
         flexWrap: 'wrap',
         alignItems: 'flex-start', // if you want to fill rows left to right
-        marginVertical: 20,
-        paddingBottom: 500,
+        marginVertical: 10,
+        paddingBottom: 500
     },
     points: {
         // flex: 1,
@@ -363,4 +249,4 @@ const styles = StyleSheet.create({
 });
 
 //make this component available to the app
-export default UserSensorScreen;
+export default ClinicianSensorSp02DetailScreen;

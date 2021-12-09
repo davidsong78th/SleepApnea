@@ -4,17 +4,22 @@ export const DELETE_USERS = 'DELETE_USERS'
 import { insertUser, fetchUsers, deleteUser } from '../helpers/db';
 
 
-export const addUser = (title, document, dateCreated) => {
+export const addUser = (title, ECGLog, EEGLog, OxymeterLog, StrainLog, FlowLog, SnoreLog, dateCreated) => {
     return async (dispatch) => {
         try {
-            const dbResult = await insertUser(title, document, dateCreated, 23.1)
+            const dbResult = await insertUser(title, ECGLog, EEGLog, OxymeterLog, StrainLog, FlowLog, SnoreLog, dateCreated)
             // console.log(dbResult)
             dispatch({
                 type: ADD_USERS,
                 userData: {
                     id: dbResult.insertId,
                     title: title,
-                    document: document,
+                    ECGLog: ECGLog,
+                    EEGLog: EEGLog,
+                    OxymeterLog: OxymeterLog,
+                    StrainLog: StrainLog,
+                    FlowLog: FlowLog,
+                    SnoreLog: SnoreLog,
                     dateCreated: dateCreated
                 }
             })

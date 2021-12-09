@@ -1,6 +1,6 @@
 //import libraries
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Image } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import HeaderButton from '../components/HeaderButton'
 
@@ -8,11 +8,13 @@ import HeaderButton from '../components/HeaderButton'
 const HelpScreen = (props) => {
     return (
         <View style={styles.screen}>
-            <Text>Help Screen</Text>
+            <Text>Coming Soon...</Text>
+            <Image style={styles.image} source={require('../assets/thumbup.png')} />
             <Text></Text>
         </View>
     )
 };
+
 
 HelpScreen.navigationOptions = navData => {
     return {
@@ -30,7 +32,12 @@ const styles = StyleSheet.create({
     screen: {
         flex: 1,
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        backgroundColor: 'white'
+    },
+    image: {
+        width: 300,
+        height: 300
     }
 });
 

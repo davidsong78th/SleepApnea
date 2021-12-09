@@ -72,7 +72,12 @@ const ListScreen = (props) => {
                                 dateCreated={itemData.item.dateCreated}
                                 onSelect={() => {
                                     props.navigation.navigate('UserSensor', {
-                                        userDocument: itemData.item.document,
+                                        userECGLog: itemData.item.ECGLog,
+                                        userEEGLog: itemData.item.EEGLog,
+                                        userOxymeterLog: itemData.item.OxymeterLog,
+                                        userStrainLog: itemData.item.StrainLog,
+                                        userFlowLog: itemData.item.FlowLog,
+                                        userSnoreLog: itemData.item.SnoreLog,
                                         dateCreated: itemData.item.dateCreated,
                                         userTitle: itemData.item.title,
                                         userId: itemData.item.id,
