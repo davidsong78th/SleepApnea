@@ -42,7 +42,6 @@ const ClinicianSensorDetail100SampleScreen = (props) => {
         { label: 'Medium', value: 500 },
         { label: 'High', value: 1000 }
     ]);
-    // // console.log(value)
 
     const readFile = async () => {
         const fileString = await FileSystem.readAsStringAsync(documentPath)
@@ -125,7 +124,6 @@ const ClinicianSensorDetail100SampleScreen = (props) => {
     }
     const sampledPoints = value //from dropdown menu
     const sampledData = getData(fileData, sampledPoints)
-    // console.log(sampledData)
 
     //Show Data points handler
     const [showDataPoints, setShowDataPoints] = useState(false)

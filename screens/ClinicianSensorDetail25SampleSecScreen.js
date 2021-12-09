@@ -131,7 +131,6 @@ const ClinicianSensorDetailScreen = (props) => {
     }
     const sampledPoints = value //from dropdown menu
     const sampledData = getData(fileData, sampledPoints)
-    console.log(sampledData)
 
     //Show Data points handler
     const [showDataPoints, setShowDataPoints] = useState(false)
